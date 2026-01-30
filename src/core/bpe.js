@@ -10,6 +10,15 @@
  */
 
 export class BytePairEncoder {
+  // Debug flag - set to true to enable detailed BPE logging
+  static DEBUG = false;
+  
+  static _log(...args) {
+    if (this.DEBUG) {
+      console.log('[BPE]', ...args);
+    }
+  }
+  
   /**
    * Encode a piece of bytes into token IDs using BPE
    * @param {Map<string, number>} ranks - Map of byte sequences (as keys) to their ranks
@@ -18,9 +27,19 @@ export class BytePairEncoder {
    */
   static encode(ranks, piece) {
     if (piece.length === 1) {
-      const key = this.bytesToKey([piece[0]]);
+      // FIX #1: Pass entire Uint8Array, not a JS array
+      const key = this.bytesToKey(piece);
       const token = ranks.get(key);
-      return token !== undefined ? [token] : [];
+      
+      // Strict validation: all single bytes should be in vocabulary
+      if (token === undefined) {
+        throw new Error(
+          `Single byte ${piece[0]} (key: ${key}) not found in vocabulary. ` +
+          `This should never happen - all 256 bytes should be in the base vocabulary.`
+        );
+      }
+      
+      return [token];
     }
 
     const parts = this._bytePairMerge(ranks, piece);
@@ -33,9 +52,19 @@ export class BytePairEncoder {
       const byteSlice = piece.slice(start, end);
       const key = this.bytesToKey(byteSlice);
       const token = ranks.get(key);
-      if (token !== undefined) {
-        tokens.push(token);
+      
+      // FIX #2: Strict validation - BPE should only produce valid tokens
+      if (token === undefined) {
+        throw new Error(
+          `BPE algorithm produced sequence not in vocabulary:\n` +
+          `  Bytes: [${Array.from(byteSlice).join(', ')}]\n` +
+          `  Base64 key: ${key}\n` +
+          `  Position: ${start}-${end} in piece of length ${piece.length}\n` +
+          `  This indicates a bug in the BPE merge algorithm.`
+        );
       }
+      
+      tokens.push(token);
     }
     
     return tokens;
@@ -47,6 +76,8 @@ export class BytePairEncoder {
    * @private
    */
   static _bytePairMerge(ranks, piece) {
+    this._log(`Starting BPE for piece of length ${piece.length}:`, Array.from(piece));
+    
     // Array of {pos: byte_position, rank: merge_priority}
     // Lower rank = higher priority to merge
     const parts = [];
@@ -69,9 +100,35 @@ export class BytePairEncoder {
     // Add sentinel values at the end
     parts.push({ pos: piece.length - 1, rank: Infinity });
     parts.push({ pos: piece.length, rank: Infinity });
+    
+    this._log(`Initial parts: ${parts.length}, minRank:`, minRank);
 
     // Phase 2: Merge loop - repeatedly merge lowest-rank pair
+    // FIX #3: Add iteration counter to prevent infinite loops
+    let iterations = 0;
+    const maxIterations = piece.length * 2;  // Theoretical max: one merge per byte pair
+    
     while (minRank.rank !== Infinity) {
+      // Safety check: detect infinite loops
+      iterations++;
+      if (iterations > maxIterations) {
+        const partsDebug = parts.slice(0, 10).map((p, idx) => 
+          `${idx}: pos=${p.pos} rank=${p.rank}`
+        ).join(', ');
+        
+        throw new Error(
+          `BPE merge infinite loop detected!\n` +
+          `  Iterations: ${iterations} (max: ${maxIterations})\n` +
+          `  Piece length: ${piece.length}\n` +
+          `  Current minRank: rank=${minRank.rank} index=${minRank.index}\n` +
+          `  Parts count: ${parts.length}\n` +
+          `  First 10 parts: ${partsDebug}\n` +
+          `  This is a critical bug in the merge algorithm.`
+        );
+      }
+      
+      this._log(`Iteration ${iterations}: merging at index ${minRank.index}, rank ${minRank.rank}`);
+      
       const i = minRank.index;
       
       // Update ranks of adjacent pairs before removing the merged one
@@ -91,6 +148,8 @@ export class BytePairEncoder {
         }
       }
     }
+    
+    this._log(`BPE complete after ${iterations} iterations, final parts:`, parts.length);
     
     return parts;
   }
