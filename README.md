@@ -15,17 +15,35 @@ Token Total is a pure JavaScript port of OpenAI's tiktoken library, designed to 
 
 ## Quick Start
 
-### 1. Clone and Serve
+### Option 1: Use Any Static Server
 
 ```bash
-git clone https://github.com/yourusername/token-total.git
-cd token-total
+# Python (if you have it)
 python -m http.server 8000
+
+# Node.js
+npx serve
+
+# Or use VS Code Live Server extension
+# Or any other static file server
 ```
 
-Then open `http://localhost:8000/examples/simple.html`
+Then open `http://localhost:8000`
+
+### Option 2: Deploy Immediately
+
+Just upload the entire folder to:
+- GitHub Pages
+- Netlify (drag & drop)
+- Vercel
+- Cloudflare Pages
+- Any static hosting
+
+**That's it!** No build step, no npm install, no dependencies.
 
 ### 2. Use in Your Project
+
+**Important**: Since this uses ES modules, you need to serve the files over HTTP (not `file://`). Any static server works!
 
 ```html
 <!DOCTYPE html>
@@ -151,12 +169,15 @@ src/
 
 ### Data Files
 
-Vocabulary files are loaded from OpenAI's CDN:
-- **cl100k_base**: 1.6 MB (GPT-4)
-- **o200k_base**: ~2 MB (GPT-4o)
-- **r50k_base**: 456 KB (GPT-2/3)
+Vocabulary files are included in the project (`public/encodings/`):
+- **cl100k_base**: 1.7 MB (GPT-4)
+- **o200k_base**: 3.5 MB (GPT-4o)
+- **p50k_base**: 817 KB (GPT-3)
+- **r50k_base**: 816 KB (GPT-2)
 
 Files are cached in IndexedDB after first load for offline use.
+
+**Note**: These files are static and included in the repo, so no external API calls are needed!
 
 ## Examples
 
