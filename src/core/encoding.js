@@ -16,31 +16,48 @@ export class Encoding {
    * @param {Object<string, number>} specialTokens - Map of special token strings to IDs
    */
   constructor(name, patStr, mergeableRanks, specialTokens = {}) {
+    console.log(`[Encoding] Creating encoding: ${name}`);
+    console.log(`[Encoding] Mergeable ranks size: ${mergeableRanks.size}`);
+    console.log(`[Encoding] Special tokens: ${Object.keys(specialTokens).length}`);
+    
     this.name = name;
     this._patStr = patStr;
     this._mergeableRanks = mergeableRanks;
     this._specialTokens = specialTokens;
     
+    console.log(`[Encoding] Building decoder map...`);
     // Build decoder maps
     this._decoder = new Map();
+    let decoderCount = 0;
     for (const [key, rank] of mergeableRanks) {
       this._decoder.set(rank, BytePairEncoder.keyToBytes(key));
+      decoderCount++;
+      if (decoderCount % 50000 === 0) {
+        console.log(`[Encoding] Built ${decoderCount}/${mergeableRanks.size} decoder entries...`);
+      }
     }
+    console.log(`[Encoding] Decoder map complete: ${this._decoder.size} entries`);
     
+    console.log(`[Encoding] Building special tokens decoder...`);
     this._specialTokensDecoder = new Map();
     const encoder = new TextEncoder();
     for (const [token, rank] of Object.entries(specialTokens)) {
       this._specialTokensDecoder.set(rank, encoder.encode(token));
     }
+    console.log(`[Encoding] Special tokens decoder complete`);
     
     // Compile regex patterns
+    console.log(`[Encoding] Compiling regex pattern (length: ${patStr.length})...`);
     try {
       this._pattern = new RegExp(patStr, 'gu');
+      console.log(`[Encoding] Regex compiled successfully`);
     } catch (e) {
+      console.error(`[Encoding] Regex compilation failed:`, e);
       throw new Error(`Invalid regex pattern: ${patStr}. Error: ${e.message}`);
     }
     
     // Create regex for special tokens
+    console.log(`[Encoding] Creating special token pattern...`);
     if (Object.keys(specialTokens).length > 0) {
       const specialPattern = Object.keys(specialTokens)
         .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -49,15 +66,33 @@ export class Encoding {
     } else {
       this._specialPattern = null;
     }
+    console.log(`[Encoding] Special token pattern complete`);
     
     // Calculate max token value
-    const maxMergeable = mergeableRanks.size > 0 
-      ? Math.max(...mergeableRanks.values()) 
-      : -1;
-    const maxSpecial = Object.keys(specialTokens).length > 0
-      ? Math.max(...Object.values(specialTokens))
-      : -1;
+    console.log(`[Encoding] Calculating max token value...`);
+    // FIX: Don't spread 200k values! Use a loop instead
+    let maxMergeable = -1;
+    if (mergeableRanks.size > 0) {
+      for (const rank of mergeableRanks.values()) {
+        if (rank > maxMergeable) {
+          maxMergeable = rank;
+        }
+      }
+    }
+    
+    let maxSpecial = -1;
+    if (Object.keys(specialTokens).length > 0) {
+      for (const rank of Object.values(specialTokens)) {
+        if (rank > maxSpecial) {
+          maxSpecial = rank;
+        }
+      }
+    }
+    
     this.maxTokenValue = Math.max(maxMergeable, maxSpecial);
+    console.log(`[Encoding] Max token value: ${this.maxTokenValue}`);
+    
+    console.log(`[Encoding] Encoding ${name} constructed successfully!`);
   }
 
   // ==================== Encoding Methods ====================

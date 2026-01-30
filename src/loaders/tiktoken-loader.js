@@ -164,37 +164,40 @@ export async function loadTiktokenBpe(url, expectedHash = null) {
   }
 
   // Parse .tiktoken format: base64_token rank
+  console.log(`Parsing ${cacheName}...`);
   const ranks = new Map();
   const lines = text.split('\n');
+  console.log(`Split into ${lines.length} lines`);
 
-  for (const line of lines) {
+  // CRITICAL FIX: The file is already base64-encoded, so the keys ARE the tokens!
+  // We don't need to decode and re-encode - just use the base64 strings directly
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     if (!line.trim()) continue;
 
-    const parts = line.trim().split(' ');
-    if (parts.length !== 2) {
-      console.warn(`Skipping invalid line: ${line}`);
+    const spaceIndex = line.indexOf(' ');
+    if (spaceIndex === -1) {
+      console.warn(`Skipping invalid line ${i}: ${line}`);
       continue;
     }
 
-    const [tokenBase64, rankStr] = parts;
+    const tokenBase64 = line.substring(0, spaceIndex);
+    const rankStr = line.substring(spaceIndex + 1);
     const rank = parseInt(rankStr, 10);
 
     if (isNaN(rank)) {
-      console.warn(`Invalid rank in line: ${line}`);
+      console.warn(`Invalid rank in line ${i}: ${line}`);
       continue;
     }
 
-    try {
-      // Decode base64 token to bytes, then convert to our key format
-      const binary = atob(tokenBase64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
-      const key = BytePairEncoder.bytesToKey(bytes);
-      ranks.set(key, rank);
-    } catch (e) {
-      console.warn(`Failed to decode token: ${tokenBase64}`, e);
+    // FIXED: Use the base64 string directly as the key
+    // The .tiktoken file already has base64-encoded tokens, which matches
+    // what BytePairEncoder.bytesToKey() produces
+    ranks.set(tokenBase64, rank);
+    
+    // Progress logging for large files
+    if (i > 0 && i % 50000 === 0) {
+      console.log(`Parsed ${i}/${lines.length} lines...`);
     }
   }
 

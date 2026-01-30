@@ -22,7 +22,7 @@ export const ENCODING_CONSTRUCTORS = {
   cl100k_base: {
     url: '.././public/encodings/cl100k_base.tiktoken',
     hash: '223921b76ee99bde995b7ff738513eef100fb51d18c93597a113bcffe865b2a7',
-    patStr: `'(?i:[sdmt]|ll|ve|re)|[^\\r\\n\\p{L}\\p{N}]?+\\p{L}++|\\p{N}{1,3}+| ?[^\\s\\p{L}\\p{N}]++[\\r\\n]*+|\\s++$|\\s*[\\r\\n]|\\s+(?!\\S)|\\s`,
+    patStr: `'(?i:[sdmt]|ll|ve|re)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s+$|\\s*[\\r\\n]|\\s+(?!\\S)|\\s`,
     specialTokens: {
       [ENDOFTEXT]: 100257,
       [FIM_PREFIX]: 100258,
@@ -49,7 +49,7 @@ export const ENCODING_CONSTRUCTORS = {
   r50k_base: {
     url: '.././public/encodings/r50k_base.tiktoken',
     hash: '306cd27f03c1a714eca7108e03d66b7dc042abe8c258b44c199a7ed9838dd930',
-    patStr: `'(?:[sdmt]|ll|ve|re)| ?\\p{L}++| ?\\p{N}++| ?[^\\s\\p{L}\\p{N}]++|\\s++$|\\s+(?!\\S)|\\s`,
+    patStr: `'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+$|\\s+(?!\\S)|\\s`,
     specialTokens: {
       [ENDOFTEXT]: 50256,
     },
@@ -59,7 +59,7 @@ export const ENCODING_CONSTRUCTORS = {
   p50k_base: {
     url: '.././public/encodings/p50k_base.tiktoken',
     hash: '94b5ca7dff4d00767bc256fdd1b27e5b17361d7b8a5f968547f9f23eb70d2069',
-    patStr: `'(?:[sdmt]|ll|ve|re)| ?\\p{L}++| ?\\p{N}++| ?[^\\s\\p{L}\\p{N}]++|\\s++$|\\s+(?!\\S)|\\s`,
+    patStr: `'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+$|\\s+(?!\\S)|\\s`,
     specialTokens: {
       [ENDOFTEXT]: 50256,
     },
@@ -69,7 +69,7 @@ export const ENCODING_CONSTRUCTORS = {
   p50k_edit: {
     url: '.././public/encodings/p50k_base.tiktoken',
     hash: '94b5ca7dff4d00767bc256fdd1b27e5b17361d7b8a5f968547f9f23eb70d2069',
-    patStr: `'(?:[sdmt]|ll|ve|re)| ?\\p{L}++| ?\\p{N}++| ?[^\\s\\p{L}\\p{N}]++|\\s++$|\\s+(?!\\S)|\\s`,
+    patStr: `'(?:[sdmt]|ll|ve|re)| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+$|\\s+(?!\\S)|\\s`,
     specialTokens: {
       [ENDOFTEXT]: 50256,
       [FIM_PREFIX]: 50281,
@@ -147,8 +147,11 @@ const encodingCache = new Map();
 export async function getEncoding(encodingName) {
   // Check cache
   if (encodingCache.has(encodingName)) {
+    console.log(`Using cached encoding: ${encodingName}`);
     return encodingCache.get(encodingName);
   }
+
+  console.log(`Loading encoding: ${encodingName}`);
 
   // Get configuration
   const config = ENCODING_CONSTRUCTORS[encodingName];
@@ -159,31 +162,43 @@ export async function getEncoding(encodingName) {
     );
   }
 
-  // Load mergeable ranks
-  const mergeableRanks = await loadTiktokenBpe(config.url, config.hash);
+  try {
+    console.log(`Step 1: Loading mergeable ranks from ${config.url}`);
+    // Load mergeable ranks
+    const mergeableRanks = await loadTiktokenBpe(config.url, config.hash);
+    console.log(`Step 1 complete: Loaded ${mergeableRanks.size} ranks`);
 
-  // Create encoding
-  const encoding = new Encoding(
-    encodingName,
-    config.patStr,
-    mergeableRanks,
-    config.specialTokens
-  );
+    console.log(`Step 2: Creating Encoding object`);
+    // Create encoding
+    const encoding = new Encoding(
+      encodingName,
+      config.patStr,
+      mergeableRanks,
+      config.specialTokens
+    );
+    console.log(`Step 2 complete: Encoding created`);
 
-  // Verify vocab size if specified
-  if (config.explicitNVocab) {
-    const actualVocabSize = mergeableRanks.size + Object.keys(config.specialTokens).length;
-    if (actualVocabSize !== config.explicitNVocab) {
-      console.warn(
-        `Vocab size mismatch for ${encodingName}: ` +
-        `expected ${config.explicitNVocab}, got ${actualVocabSize}`
-      );
+    console.log(`Step 3: Verifying vocab size`);
+    // Verify vocab size if specified
+    if (config.explicitNVocab) {
+      const actualVocabSize = mergeableRanks.size + Object.keys(config.specialTokens).length;
+      if (actualVocabSize !== config.explicitNVocab) {
+        console.warn(
+          `Vocab size mismatch for ${encodingName}: ` +
+          `expected ${config.explicitNVocab}, got ${actualVocabSize}`
+        );
+      }
     }
-  }
+    console.log(`Step 3 complete: Vocab size verified`);
 
-  // Cache and return
-  encodingCache.set(encodingName, encoding);
-  return encoding;
+    // Cache and return
+    encodingCache.set(encodingName, encoding);
+    console.log(`Encoding ${encodingName} ready!`);
+    return encoding;
+  } catch (error) {
+    console.error(`Failed to load encoding ${encodingName}:`, error);
+    throw error;
+  }
 }
 
 /**
