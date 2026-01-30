@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Total - Home</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 50px;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3.5em;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+    }
+
+    .tagline {
+      font-size: 1.3em;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .features {
+      text-align: left;
+      margin: 40px 0;
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+
+    .features h2 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+
+    .features ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .features li {
+      padding: 8px 0;
+      color: #555;
+    }
+
+    .features li:before {
+      content: "✓ ";
+      color: #667eea;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 40px;
+    }
+
+    .link-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .link-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .link-card h3 {
+      font-size: 1.3em;
+      margin-bottom: 8px;
+    }
+
+    .link-card p {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    .code-example {
+      background: #2d2d2d;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: left;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      margin: 30px 0;
+      overflow-x: auto;
+    }
+
+    .code-example .keyword { color: #569cd6; }
+    .code-example .string { color: #ce9178; }
+    .code-example .comment { color: #6a9955; }
+    .code-example .function { color: #dcdcaa; }
+
+    .footer {
+      margin-top: 40px;
+      color: #888;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Token Total</h1>
+    <p class="tagline">
+      A vanilla JavaScript BPE tokenizer for static websites<br>
+      Count OpenAI tokens without a server
+    </p>
+
+    <div class="features">
+      <h2>Why Token Total?</h2>
+      <ul>
+        <li>Zero dependencies - pure vanilla JavaScript</li>
+        <li>Works completely offline with browser caching</li>
+        <li>100% compatible with tiktoken</li>
+        <li>Supports all OpenAI models (GPT-4o, GPT-4, GPT-3.5, etc.)</li>
+        <li>Perfect for static sites on GitHub Pages, Netlify, Vercel</li>
+      </ul>
+    </div>
+
+    <div class="code-example">
+<span class="keyword">import</span> { <span class="function">encodingForModel</span> } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
+
+<span class="keyword">const</span> enc = <span class="keyword">await</span> <span class="function">encodingForModel</span>(<span class="string">'gpt-4'</span>);
+<span class="keyword">const</span> tokens = enc.<span class="function">encode</span>(<span class="string">'Hello, world!'</span>);
+
+<span class="comment">// [9906, 11, 1917, 0]</span>
+    </div>
+
+    <div class="links">
+      <a href="examples/simple.html" class="link-card">
+        <h3>Simple Demo</h3>
+        <p>Basic token counter with live updates</p>
+      </a>
+
+      <a href="examples/advanced.html" class="link-card">
+        <h3>Advanced Demo</h3>
+        <p>Visualize tokens with colors and details</p>
+      </a>
+
+      <a href="test/index.html" class="link-card">
+        <h3>Run Tests</h3>
+        <p>Verify compatibility with tiktoken</p>
+      </a>
+    </div>
+
+    <div class="footer">
+      Built from scratch by analyzing tiktoken's implementation<br>
+      Open source • MIT License
+    </div>
+  </div>
+</body>
+</html>

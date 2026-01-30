@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Total - Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 { color: #4ec9b0; }
+    .test { margin: 10px 0; padding: 10px; border-left: 3px solid #666; }
+    .test.pass { border-color: #4ec9b0; background: #1a3a1a; }
+    .test.fail { border-color: #f48771; background: #3a1a1a; }
+    .test-name { font-weight: bold; }
+    .expected { color: #ce9178; }
+    .actual { color: #9cdcfe; }
+    pre { background: #2d2d2d; padding: 10px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>Token Total - Test Suite</h1>
+  <div id="results"></div>
+  <div id="summary"></div>
+
+  <script type="module">
+    import { getEncoding } from '../src/index.js';
+
+    // Test cases from tiktoken's test_encoding.py
+    const TESTS = [
+      {
+        name: 'GPT-2: hello world',
+        encoding: 'r50k_base',
+        text: 'hello world',
+        expected: [31373, 995],
+      },
+      {
+        name: 'cl100k_base: hello world',
+        encoding: 'cl100k_base',
+        text: 'hello world',
+        expected: [15339, 1917],
+      },
+      {
+        name: 'Empty string',
+        encoding: 'cl100k_base',
+        text: '',
+        expected: [],
+      },
+      {
+        name: 'Single character',
+        encoding: 'cl100k_base',
+        text: 'a',
+        expected: [64],
+      },
+      {
+        name: 'Numbers',
+        encoding: 'cl100k_base',
+        text: '12345',
+        expected: [4513, 1774],
+      },
+      {
+        name: 'Unicode',
+        encoding: 'cl100k_base',
+        text: '你好',
+        expected: [57668, 25001],
+      },
+      {
+        name: 'Special characters',
+        encoding: 'cl100k_base',
+        text: '!@#$%',
+        expected: [0, 31, 49177],
+      },
+      {
+        name: 'Newlines',
+        encoding: 'cl100k_base',
+        text: 'hello\nworld',
+        expected: [15339, 198, 14957],
+      },
+      {
+        name: 'Special token allowed',
+        encoding: 'cl100k_base',
+        text: 'hello <|endoftext|>',
+        expected: [15339, 220, 100257],
+        options: { allowedSpecial: new Set(['<|endoftext|>']) },
+      },
+    ];
+
+    async function runTests() {
+      const results = document.getElementById('results');
+      let passed = 0;
+      let failed = 0;
+
+      for (const test of TESTS) {
+        const testEl = document.createElement('div');
+        testEl.className = 'test';
+
+        try {
+          const encoding = await getEncoding(test.encoding);
+          const actual = encoding.encode(test.text, test.options || {});
+          
+          const match = JSON.stringify(actual) === JSON.stringify(test.expected);
+          
+          if (match) {
+            testEl.classList.add('pass');
+            testEl.innerHTML = `
+              <div class="test-name">✓ ${test.name}</div>
+              <div>Result: <span class="actual">${JSON.stringify(actual)}</span></div>
+            `;
+            passed++;
+          } else {
+            testEl.classList.add('fail');
+            testEl.innerHTML = `
+              <div class="test-name">✗ ${test.name}</div>
+              <div>Expected: <span class="expected">${JSON.stringify(test.expected)}</span></div>
+              <div>Actual: <span class="actual">${JSON.stringify(actual)}</span></div>
+            `;
+            failed++;
+          }
+
+          // Test decode roundtrip
+          const decoded = encoding.decode(actual);
+          if (decoded !== test.text && test.text !== '') {
+            testEl.classList.remove('pass');
+            testEl.classList.add('fail');
+            testEl.innerHTML += `<div style="color: #f48771;">Decode mismatch: "${decoded}" !== "${test.text}"</div>`;
+            if (match) {
+              passed--;
+              failed++;
+            }
+          }
+
+        } catch (err) {
+          testEl.classList.add('fail');
+          testEl.innerHTML = `
+            <div class="test-name">✗ ${test.name}</div>
+            <div style="color: #f48771;">Error: ${err.message}</div>
+          `;
+          failed++;
+        }
+
+        results.appendChild(testEl);
+      }
+
+      const summary = document.getElementById('summary');
+      summary.innerHTML = `
+        <h2>Summary</h2>
+        <pre>Total: ${passed + failed}
+Passed: ${passed}
+Failed: ${failed}
+Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%</pre>
+      `;
+    }
+
+    runTests();
+  </script>
+</body>
+</html>

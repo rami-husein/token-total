@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Total - Simple Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+
+    .settings {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .setting {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 16px;
+      font-family: 'Courier New', monospace;
+      resize: vertical;
+      min-height: 200px;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .stats {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .stat {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5em;
+      font-weight: bold;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: #ff6b6b;
+      color: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #888;
+      font-size: 0.9em;
+    }
+
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Token Total</h1>
+    <p class="subtitle">Count tokens for OpenAI models - No server required!</p>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Loading tokenizer...</div>
+    </div>
+
+    <div id="app" style="display: none;">
+      <div class="settings">
+        <div class="setting">
+          <label for="model">Model:</label>
+          <select id="model">
+            <optgroup label="GPT-4o">
+              <option value="gpt-4o" selected>gpt-4o</option>
+              <option value="gpt-4o-mini">gpt-4o-mini</option>
+            </optgroup>
+            <optgroup label="GPT-4">
+              <option value="gpt-4">gpt-4</option>
+              <option value="gpt-4-turbo">gpt-4-turbo</option>
+            </optgroup>
+            <optgroup label="GPT-3.5">
+              <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="encoding">Encoding:</label>
+          <select id="encoding">
+            <option value="o200k_base">o200k_base (GPT-4o)</option>
+            <option value="cl100k_base">cl100k_base (GPT-4)</option>
+            <option value="p50k_base">p50k_base (GPT-3)</option>
+            <option value="r50k_base">r50k_base (older)</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="input">Enter text to tokenize:</label>
+      <textarea 
+        id="input" 
+        placeholder="Type or paste your text here...">Hello, world! This is a demo of the token counter.</textarea>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value" id="tokenCount">0</span>
+          <span class="stat-label">Tokens</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="charCount">0</span>
+          <span class="stat-label">Characters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="ratio">0.0</span>
+          <span class="stat-label">Chars/Token</span>
+        </div>
+      </div>
+
+      <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <div class="footer">
+      Built with vanilla JavaScript • No dependencies • 
+      <a href="https://github.com" target="_blank">View Source</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { encodingForModel, getEncoding } from '../src/index.js';
+
+    let currentEncoding = null;
+    let updateTimeout = null;
+
+    async function init() {
+      try {
+        // Load initial encoding
+        currentEncoding = await encodingForModel('gpt-4o');
+        
+        // Hide loading, show app
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+
+        // Initial count
+        updateTokenCount();
+
+        // Set up event listeners
+        document.getElementById('input').addEventListener('input', () => {
+          clearTimeout(updateTimeout);
+          updateTimeout = setTimeout(updateTokenCount, 300);
+        });
+
+        document.getElementById('model').addEventListener('change', async (e) => {
+          try {
+            currentEncoding = await encodingForModel(e.target.value);
+            updateTokenCount();
+          } catch (err) {
+            showError(err.message);
+          }
+        });
+
+        document.getElementById('encoding').addEventListener('change', async (e) => {
+          try {
+            currentEncoding = await getEncoding(e.target.value);
+            updateTokenCount();
+          } catch (err) {
+            showError(err.message);
+          }
+        });
+      } catch (err) {
+        document.getElementById('loading').innerHTML = 
+          `<div class="error">Failed to load tokenizer: ${err.message}</div>`;
+      }
+    }
+
+    function updateTokenCount() {
+      const text = document.getElementById('input').value;
+      const charCount = text.length;
+
+      try {
+        const tokens = currentEncoding.encode(text);
+        const tokenCount = tokens.length;
+        const ratio = tokenCount > 0 ? (charCount / tokenCount).toFixed(1) : 0;
+
+        document.getElementById('tokenCount').textContent = tokenCount;
+        document.getElementById('charCount').textContent = charCount;
+        document.getElementById('ratio').textContent = ratio;
+
+        hideError();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById('error');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('error').style.display = 'none';
+    }
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>

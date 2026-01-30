@@ -1,0 +1,14 @@
+{
+  "name": "token-total",
+  "version": "1.0.0",
+  "description": "Vanilla JavaScript implementation of tiktoken (BPE tokenizer) for static websites",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "test": "echo \"Tests via browser - open test/index.html\""
+  },
+  "keywords": ["tokenizer", "bpe", "tiktoken", "gpt", "openai"],
+  "author": "",
+  "license": "MIT"
+}
