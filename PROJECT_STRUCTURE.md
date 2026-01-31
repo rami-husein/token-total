@@ -11,7 +11,8 @@ token-total/
 ├── examples/               # Demo pages
 ├── test/                   # Test suite
 ├── test-single-byte.html   # Debug test page
-├── index.html              # Landing page
+├── index.html              # Main application
+├── how-it-works.html       # Explanation page
 ├── package.json            # Project metadata
 ├── README.md               # User-facing documentation
 ├── CHANGELOG.md            # Version history and changes
@@ -124,13 +125,23 @@ Example: `IQ== 0` (byte 33, '!' character, rank 0)
 
 **`index.html`** (~1050 lines)
 - Unified single-page application
-- Tab-based interface with 4 sections:
+- Tab-based interface with 5 sections:
   1. **Simple Counter** - Basic token counting with real-time updates
   2. **Token Visualizer** - Color-coded token visualization with details
   3. **Run Tests** - Test suite comparing outputs with tiktoken
   4. **Library Usage** - Code examples and API documentation
+  5. **How It Works** - Link to explanation page
 - Combines all functionality from separate demo and test pages
 - No marketing content - focused tool interface
+
+**`how-it-works.html`** (~550 lines)
+- Educational page explaining tokenization process
+- Step-by-step walkthrough for laymen and junior engineers
+- 5 main steps: text splitting, byte encoding, BPE algorithm, token ID assignment, decoding
+- Visual demonstrations with concrete examples ("Hello, world!")
+- Covers token limits, API costs, vocabulary details, special tokens
+- Follows retro-brutal design aesthetic matching main interface
+- Accessible via navigation link from main index.html
 
 **`package.json`**
 - Project metadata
@@ -169,10 +180,11 @@ Example: `IQ== 0` (byte 33, '!' character, rank 0)
 | Source code | 5 JS files | ~50 KB |
 | Vocabulary files | 4 .tiktoken | ~7 MB |
 | Main app | 1 HTML (index.html) | ~50 KB |
+| Explanation page | 1 HTML (how-it-works.html) | ~20 KB |
 | Legacy examples | 2 HTML | ~20 KB |
 | Tests | 2 HTML | ~15 KB |
 | Documentation | 5 MD files | ~30 KB |
-| **Total** | **19 files** | **~7.2 MB** |
+| **Total** | **20 files** | **~7.2 MB** |
 
 ## Key Design Principles
 

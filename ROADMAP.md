@@ -49,6 +49,16 @@ Future features and improvements for Token Total.
   - All 9 tests now pass with 100% success rate
   - Confirmed implementation matches tiktoken exactly
 
+### Documentation (2026-01-31)
+- ✅ **Educational "How It Works" Page**: Created comprehensive explanation page for laymen and junior engineers
+  - New file: `how-it-works.html` (~550 lines, ~16KB)
+  - Step-by-step walkthrough without jargon, metaphors, or analogies
+  - 5 main steps: text splitting, byte encoding, BPE algorithm, token ID assignment, decoding
+  - Visual demonstrations with concrete examples ("Hello, world!" → actual tokens)
+  - Covers token limits, API costs, vocabulary details, special tokens
+  - Follows retro-brutal design aesthetic
+  - Linked from main navigation and README
+
 ---
 
 ## Near Term (Next 1-2 Weeks)

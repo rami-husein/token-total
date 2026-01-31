@@ -75,3 +75,88 @@ print(enc.encode("!@#$%"))    # [0, 31, 49177, 4] ✓
 - Proper use of tracking docs (CHANGELOG, DECISIONS, AGENTS)
 
 ---
+
+## Session: 2026-01-31 - Educational Documentation Creation
+
+**Agent**: OpenCode (Claude Sonnet 4.5)
+
+**User Request**: "We want to offer an explanation page that's targeted towards the layman or junior engineer. Something that explains exactly how the encoding and tokenizing works. It should avoid advanced jargon, but explain in a way that the reader can easily grasp the entire concept from start to finish. Avoid using metaphors and analogies. Walk through the entire process in a numbered sequence of steps."
+
+**Context**: 
+User requested a comprehensive educational page to help non-experts understand how tokenization works. Requirements:
+- Target audience: laymen and junior engineers
+- Avoid jargon, metaphors, and analogies
+- Clear step-by-step walkthrough
+- Explain the complete process from text input to token IDs
+
+**Implementation**:
+Created `how-it-works.html` - a comprehensive educational page with:
+
+1. **Five-Step Process Walkthrough**:
+   - Step 1: Text Splitting - How input is divided into chunks using regex
+   - Step 2: Byte Encoding - Converting text to UTF-8 bytes
+   - Step 3: Byte Pair Encoding (BPE) - Core merging algorithm with visual demo
+   - Step 4: Token ID Assignment - Looking up sequences in vocabulary
+   - Step 5: Decoding - Reverse process back to text
+
+2. **Educational Features**:
+   - Concrete examples using "Hello, world!" throughout
+   - Visual demonstration of BPE merging with step-by-step arrows
+   - Real byte values and token IDs shown in examples
+   - Explanations of why tokenization matters (limits, costs, performance)
+   - Details on different vocabularies (GPT-4o: 200k, GPT-4: 100k, etc.)
+   - Coverage of special tokens and their purposes
+   - Key takeaways section
+
+3. **Design Consistency**:
+   - Matched retro-brutal aesthetic from main interface
+   - Color-coded sections (steps, examples, notes, visual demos)
+   - Navigation links back to main application
+   - Approximately 550 lines, ~16KB file size
+
+**Files Created**:
+- `how-it-works.html` - Educational explanation page
+
+**Files Modified**:
+- `index.html` - Added "How It Works" button in tab navigation (line 498)
+- `README.md` - Added link to explanation page in "How It Works" section
+- `CHANGELOG.md` - Documented new educational documentation feature
+- `PROJECT_STRUCTURE.md` - Updated structure to include new file
+- `AGENTS.md` - This session documentation
+
+**Design Decisions**:
+- No metaphors/analogies as requested - direct technical explanation
+- Numbered steps for clear sequential understanding
+- Visual demonstrations using boxes and arrows (not diagrams/analogies)
+- Examples show actual data (bytes, token IDs, not abstract concepts)
+- Accessible language without sacrificing technical accuracy
+
+**Key Outcomes**:
+- ✅ Created comprehensive layman-friendly educational resource
+- ✅ Maintained technical accuracy while avoiding jargon
+- ✅ Provided concrete examples with real token values
+- ✅ Integrated seamlessly with existing design system
+- ✅ Proper documentation in all tracking files
+
+**Notes for Future Sessions**:
+- Educational page provides excellent onboarding for new users
+- Could be expanded with interactive examples in future
+- Consider adding similar pages for: API usage, performance tips, vocabulary details
+- Page follows same design patterns - easy to maintain consistency
+- User feedback may identify areas needing more clarification
+
+**Agent Performance**:
+- Successfully created educational content without technical jargon
+- Maintained accuracy while simplifying complex concepts
+- Followed design system constraints (retro-brutal aesthetic)
+- Proper documentation in all tracking files
+- Clean, maintainable code structure
+
+**Educational Content Quality**:
+- Clear progression from input text → tokens → output
+- Concrete examples at every step
+- Visual aids without using metaphors
+- Explains both "how" and "why"
+- Appropriate for target audience (laymen/junior engineers)
+
+---

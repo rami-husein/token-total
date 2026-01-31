@@ -153,6 +153,8 @@ Token Total implements the Byte Pair Encoding (BPE) algorithm used by OpenAI's m
 3. **BPE Merging**: Bytes are iteratively merged based on learned merge rules
 4. **Token IDs**: Final merged sequences are looked up in the vocabulary
 
+**Want a detailed explanation?** Check out [how-it-works.html](how-it-works.html) for a step-by-step walkthrough of the entire tokenization process, written for laymen and junior engineers.
+
 ### Architecture
 
 ```

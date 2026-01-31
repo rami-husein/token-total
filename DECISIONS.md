@@ -430,3 +430,77 @@ Implement a comprehensive retro-brutal design system with the following characte
 - Let borders and shadows create depth instead of blur
 
 ---
+
+## ADR-013: Educational Documentation Without Metaphors
+
+**Date**: 2026-01-31
+
+**Context**: 
+Users (especially junior engineers and non-technical stakeholders) need to understand how tokenization works to effectively use Token Total and understand token counts, API costs, and model limitations. Most technical documentation uses metaphors and analogies to simplify concepts, but these can sometimes obscure the actual technical process.
+
+**Decision**: 
+Create a dedicated educational page (`how-it-works.html`) that explains tokenization using:
+1. **Direct technical explanation** without metaphors or analogies
+2. **Numbered sequential steps** (5 main steps from input to output)
+3. **Concrete examples** using real data ("Hello, world!" → actual byte values → actual token IDs)
+4. **Visual demonstrations** showing the actual process with boxes and arrows
+5. **Plain language** that avoids jargon while maintaining technical accuracy
+
+**Step-by-Step Approach**:
+- Step 1: Text Splitting (regex patterns divide input into chunks)
+- Step 2: Byte Encoding (UTF-8 conversion to numeric bytes)
+- Step 3: Byte Pair Encoding (iterative merging algorithm with visual demo)
+- Step 4: Token ID Assignment (vocabulary lookup)
+- Step 5: Decoding (reverse process)
+
+**Rationale**:
+- **No abstraction loss**: Direct explanation preserves technical accuracy
+- **Reproducible understanding**: Users can follow exact process in their heads
+- **Demystification**: Shows tokenization is a straightforward algorithm, not magic
+- **Better retention**: Concrete examples with real numbers aid memory
+- **Avoids confusion**: Metaphors often break down or mislead
+- **Professional tone**: Respects reader's intelligence without talking down
+- **Onboarding value**: Helps users understand token counts aren't arbitrary
+
+**Target Audience**:
+- Junior engineers wanting to understand internals
+- Technical writers needing to explain token limits
+- Product managers estimating API costs
+- Curious users who want to know "how it really works"
+
+**Consequences**:
+- ✅ Clear, accurate technical education for non-experts
+- ✅ Reduces support questions about "why this token count?"
+- ✅ Users better understand API pricing and context limits
+- ✅ Differentiates Token Total as educational resource, not just tool
+- ✅ Content can be referenced in documentation and tutorials
+- ✅ Builds trust through transparency
+- ⚠️ Slightly more complex than metaphor-based explanations (intentional trade-off)
+- ⚠️ Requires user attention and focus (can't skim as easily)
+- ⚠️ May be too detailed for users who just want quick answers (but main app still serves that need)
+
+**Implementation Details**:
+- ~550 lines of educational HTML
+- Follows retro-brutal design aesthetic (consistency with main app)
+- Linked from main navigation and README
+- Self-contained page (can be read standalone)
+- Real examples throughout (no placeholder text)
+- Covers practical implications (costs, limits, performance)
+
+**Alternative Approaches Considered**:
+1. **Metaphor-based explanation**: "Tokens are like puzzle pieces..." 
+   - Rejected: Loses technical accuracy, doesn't explain the actual process
+2. **Video tutorial**: Animated demonstration of tokenization
+   - Deferred: Requires production time, harder to maintain
+3. **Interactive demo**: Live BPE visualization
+   - Future enhancement: Would complement written explanation
+4. **FAQ format**: Question-and-answer structure
+   - Rejected: Less structured, harder to follow sequential process
+
+**Success Criteria**:
+- Junior engineer can explain tokenization after reading
+- User understands why token counts vary between models
+- Reduced confusion about "why is this X tokens?"
+- Referenced by community as educational resource
+
+---

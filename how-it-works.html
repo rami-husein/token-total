@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Tokenization Works - Token Total</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+      background: #eaddac;
+      color: #26274e;
+      padding: 20px;
+      font-weight: 900;
+    }
+
+    .header {
+      max-width: 900px;
+      margin: 0 auto 30px;
+      background: #318b73;
+      padding: 40px;
+      border: 6px solid #26274e;
+      box-shadow: 12px 12px 0 #26274e;
+    }
+
+    h1 {
+      color: #eaddac;
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      text-shadow: 4px 4px 0 #26274e;
+      font-weight: 900;
+    }
+
+    .subtitle {
+      color: #eaddac;
+      font-size: 1.2em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-link {
+      max-width: 900px;
+      margin: 0 auto 30px;
+      text-align: center;
+    }
+
+    .nav-link a {
+      display: inline-block;
+      background: #943c23;
+      color: #eaddac;
+      border: 5px solid #26274e;
+      padding: 15px 30px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 900;
+      transition: all 0.1s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 8px 8px 0 #26274e;
+    }
+
+    .nav-link a:hover {
+      background: #d2793e;
+      color: #26274e;
+      transform: translate(-2px, -2px);
+      box-shadow: 10px 10px 0 #26274e;
+    }
+
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #eaddac;
+      padding: 40px;
+      border: 6px solid #26274e;
+      box-shadow: 12px 12px 0 #26274e;
+      line-height: 1.8;
+    }
+
+    .content h2 {
+      color: #26274e;
+      font-size: 2em;
+      margin: 40px 0 20px 0;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .content h2:first-child {
+      margin-top: 0;
+    }
+
+    .content h3 {
+      color: #26274e;
+      font-size: 1.5em;
+      margin: 30px 0 15px 0;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .content p {
+      margin-bottom: 20px;
+      color: #26274e;
+      font-weight: 700;
+      font-size: 1.05em;
+    }
+
+    .step {
+      background: #318b73;
+      color: #eaddac;
+      padding: 25px;
+      margin: 25px 0;
+      border: 5px solid #26274e;
+      box-shadow: 8px 8px 0 #26274e;
+    }
+
+    .step-number {
+      display: inline-block;
+      background: #943c23;
+      color: #eaddac;
+      border: 4px solid #26274e;
+      padding: 10px 20px;
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 0 #26274e;
+    }
+
+    .step-title {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      color: #eaddac;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .step-content {
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    .example {
+      background: #26274e;
+      color: #eaddac;
+      padding: 20px;
+      margin: 15px 0;
+      border: 4px solid #943c23;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      overflow-x: auto;
+    }
+
+    .example-label {
+      color: #d2793e;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .highlight {
+      background: #943c23;
+      color: #eaddac;
+      padding: 2px 6px;
+      border: 2px solid #26274e;
+      font-weight: 900;
+    }
+
+    .note {
+      background: #d2793e;
+      color: #26274e;
+      padding: 20px;
+      margin: 20px 0;
+      border: 5px solid #26274e;
+      box-shadow: 6px 6px 0 #26274e;
+      font-weight: 700;
+    }
+
+    .note-title {
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    ul, ol {
+      margin: 15px 0 15px 30px;
+      font-weight: 700;
+    }
+
+    li {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+
+    code {
+      background: #943c23;
+      color: #eaddac;
+      padding: 2px 8px;
+      border: 2px solid #26274e;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: 0.9em;
+    }
+
+    .visual-demo {
+      background: #318b73;
+      border: 5px solid #26274e;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 8px 8px 0 #26274e;
+    }
+
+    .visual-title {
+      color: #eaddac;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+
+    .visual-content {
+      background: #eaddac;
+      padding: 15px;
+      border: 3px solid #26274e;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: #26274e;
+    }
+
+    .arrow {
+      text-align: center;
+      font-size: 2em;
+      margin: 10px 0;
+      color: #943c23;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>How It Works</h1>
+    <p class="subtitle">Understanding Tokenization Step by Step</p>
+  </div>
+
+  <div class="nav-link">
+    <a href="index.html">← Back to Token Total</a>
+  </div>
+
+  <div class="content">
+    <h2>What is Tokenization?</h2>
+    <p>
+      Tokenization is the process of converting text into numbers that language models can process. 
+      When you type "Hello, world!" into ChatGPT, it does not see the text directly. Instead, it sees a sequence of numbers like <code>[9906, 11, 1917, 0]</code>.
+    </p>
+    <p>
+      Each number represents a token, which is a chunk of text. A token can be a whole word, part of a word, a single character, or even punctuation.
+      The model was trained on billions of these tokens, learning patterns and relationships between them.
+    </p>
+
+    <h2>The Complete Tokenization Process</h2>
+    <p>
+      When you enter text, Token Total follows these steps to convert it into tokens. We will use the example text <span class="highlight">"Hello, world!"</span> throughout.
+    </p>
+
+    <div class="step">
+      <div class="step-number">STEP 1</div>
+      <div class="step-title">Text Splitting</div>
+      <div class="step-content">
+        <p>
+          The input text is split into chunks using a regex pattern. This pattern determines how text is divided before tokenization.
+          The pattern is designed to keep related characters together (like letters in a word, or digits in a number).
+        </p>
+        <div class="example">
+          <div class="example-label">Input text:</div>
+          "Hello, world!"
+          
+          <div class="example-label" style="margin-top: 15px;">After splitting:</div>
+          ["Hello", ",", " world", "!"]
+        </div>
+        <p>
+          Notice how the text is split at word boundaries and punctuation. The space before "world" stays attached to the word.
+          This splitting strategy affects how efficiently the text can be tokenized.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">STEP 2</div>
+      <div class="step-title">Byte Encoding</div>
+      <div class="step-content">
+        <p>
+          Each text chunk is converted to UTF-8 bytes. UTF-8 is a standard way to represent text as numbers.
+          Every character, including letters, numbers, punctuation, and emoji, can be represented as a sequence of bytes.
+        </p>
+        <div class="example">
+          <div class="example-label">Text chunk: "Hello"</div>
+          Bytes: [72, 101, 108, 108, 111]
+          
+          <div class="example-label" style="margin-top: 15px;">Explanation:</div>
+          H → 72
+          e → 101
+          l → 108
+          l → 108
+          o → 111
+        </div>
+        <p>
+          At this point, we have converted text into numbers, but these are just raw byte values.
+          The next step is where the real tokenization happens.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">STEP 3</div>
+      <div class="step-title">Byte Pair Encoding (BPE)</div>
+      <div class="step-content">
+        <p>
+          BPE is the core algorithm that merges bytes into tokens. It works by repeatedly finding pairs of adjacent bytes (or already-merged tokens) 
+          and combining them into single tokens based on learned merge rules.
+        </p>
+        <p>
+          The merge rules come from a vocabulary file that was created during model training. This vocabulary contains thousands of byte sequences 
+          and their corresponding token IDs, ranked by priority.
+        </p>
+
+        <div class="visual-demo">
+          <div class="visual-title">BPE Process for "Hello"</div>
+          <div class="visual-content">
+Start: [72, 101, 108, 108, 111]
+       (H    e    l    l    o)
+          </div>
+          <div class="arrow">↓</div>
+          <div class="visual-content">
+Find lowest-rank pair: [72,101] is in vocabulary
+Merge into single token
+          </div>
+          <div class="arrow">↓</div>
+          <div class="visual-content">
+After merge: [15496, 108, 111]
+             ("He"   "l"  "o")
+          </div>
+          <div class="arrow">↓</div>
+          <div class="visual-content">
+Find next lowest-rank pair: [108,111] merges to "lo"
+          </div>
+          <div class="arrow">↓</div>
+          <div class="visual-content">
+After merge: [15496, 385]
+             ("He"   "lo")
+          </div>
+          <div class="arrow">↓</div>
+          <div class="visual-content">
+Find next pair: [15496,385] merges to "Hello"
+          </div>
+          <div class="arrow">↓</div>
+          <div class="visual-content">
+Final result: [9906]
+              ("Hello")
+          </div>
+        </div>
+
+        <p>
+          The algorithm continues merging until no more valid pairs can be found in the vocabulary.
+          Common words like "Hello" often merge into a single token, while rare words or nonsense text remain as multiple tokens.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">STEP 4</div>
+      <div class="step-title">Token ID Assignment</div>
+      <div class="step-content">
+        <p>
+          After BPE merging is complete for all text chunks, each resulting byte sequence is looked up in the vocabulary to get its token ID.
+          The vocabulary maps byte sequences to unique integer IDs.
+        </p>
+        <div class="example">
+          <div class="example-label">Final tokens for "Hello, world!":</div>
+          
+          Chunk: "Hello"    → Token ID: 9906
+          Chunk: ","        → Token ID: 11
+          Chunk: " world"   → Token ID: 1917
+          Chunk: "!"        → Token ID: 0
+          
+          <div class="example-label" style="margin-top: 15px;">Result array:</div>
+          [9906, 11, 1917, 0]
+        </div>
+        <p>
+          These token IDs are what the language model actually processes. The model has learned associations between these numeric tokens during training.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">STEP 5</div>
+      <div class="step-title">Decoding (Reverse Process)</div>
+      <div class="step-content">
+        <p>
+          To convert tokens back into text, the process runs in reverse. Each token ID is looked up in the vocabulary to get its byte sequence,
+          then those bytes are decoded back into text using UTF-8.
+        </p>
+        <div class="example">
+          <div class="example-label">Token IDs: [9906, 11, 1917, 0]</div>
+          
+          9906  → Bytes: [72,101,108,108,111] → "Hello"
+          11    → Bytes: [44]                 → ","
+          1917  → Bytes: [32,119,111,114,108,100] → " world"
+          0     → Bytes: [33]                 → "!"
+          
+          <div class="example-label" style="margin-top: 15px;">Concatenated result:</div>
+          "Hello, world!"
+        </div>
+        <p>
+          This decode step is how the model generates text responses. It produces token IDs, which are then decoded back into readable text.
+        </p>
+      </div>
+    </div>
+
+    <h2>Why Tokenization Matters</h2>
+
+    <h3>Token Limits</h3>
+    <p>
+      Language models have a maximum context window measured in tokens, not characters. 
+      GPT-4 can handle 8,192 tokens (in the base version) or 128,000 tokens (in the extended version).
+      If your conversation exceeds this limit, older messages are removed from context.
+    </p>
+
+    <h3>API Costs</h3>
+    <p>
+      OpenAI charges based on token count, not character count or word count. Understanding tokenization helps you estimate costs:
+    </p>
+    <ul>
+      <li>English text: typically 1 token per 4 characters (0.75 words per token)</li>
+      <li>Code: typically 1 token per 2-3 characters (more tokens than prose)</li>
+      <li>Non-English languages: can use 2-3x more tokens than English for the same meaning</li>
+    </ul>
+
+    <h3>Model Performance</h3>
+    <p>
+      How text is tokenized affects model understanding. Words split into multiple tokens may be harder for the model to process.
+      Rare words or misspellings often split into more tokens, which can impact model performance.
+    </p>
+
+    <h2>Vocabulary Details</h2>
+    
+    <div class="note">
+      <div class="note-title">Different Models, Different Vocabularies</div>
+      <p>
+        Each model family uses a different vocabulary file:
+      </p>
+      <ul>
+        <li><strong>GPT-4o:</strong> o200k_base vocabulary with 200,019 tokens</li>
+        <li><strong>GPT-4:</strong> cl100k_base vocabulary with 100,277 tokens</li>
+        <li><strong>GPT-3.5:</strong> cl100k_base vocabulary (same as GPT-4)</li>
+        <li><strong>GPT-3:</strong> p50k_base vocabulary with 50,281 tokens</li>
+      </ul>
+      <p>
+        Larger vocabularies can represent text more efficiently (fewer tokens), but require more model parameters.
+      </p>
+    </div>
+
+    <h3>Vocabulary Structure</h3>
+    <p>
+      The vocabulary file contains two types of entries:
+    </p>
+    <ol>
+      <li><strong>Base tokens:</strong> All 256 possible byte values (0-255). These ensure any text can be encoded.</li>
+      <li><strong>Merged tokens:</strong> Common byte sequences discovered during training (words, subwords, character patterns).</li>
+    </ol>
+    <p>
+      Each entry maps a byte sequence to a rank (priority value). During BPE encoding, pairs with lower rank values are merged first.
+    </p>
+
+    <h2>Special Tokens</h2>
+    <p>
+      In addition to regular tokens, models use special tokens for control purposes:
+    </p>
+    <ul>
+      <li><code>&lt;|endoftext|&gt;</code> - Marks the boundary between different documents during training</li>
+      <li><code>&lt;|fim_prefix|&gt;</code>, <code>&lt;|fim_middle|&gt;</code>, <code>&lt;|fim_suffix|&gt;</code> - Used for fill-in-the-middle tasks (code completion)</li>
+      <li><code>&lt;|endofprompt|&gt;</code> - Separates user input from model output in some contexts</li>
+    </ul>
+    <p>
+      These tokens have special meaning to the model and are handled separately during encoding. By default, they are not allowed in user text.
+    </p>
+
+    <h2>Key Takeaways</h2>
+    <ol>
+      <li>Tokenization converts text into numbers through: splitting, byte encoding, BPE merging, and vocabulary lookup.</li>
+      <li>The BPE algorithm merges frequent byte pairs into single tokens, making common words and patterns more efficient.</li>
+      <li>Different models use different vocabularies, so the same text may produce different token counts.</li>
+      <li>Token count directly impacts API costs, context limits, and model performance.</li>
+      <li>Token Total implements this entire process in your browser using the same vocabulary files as OpenAI's models.</li>
+    </ol>
+
+    <div class="note">
+      <div class="note-title">Try It Yourself</div>
+      <p>
+        Head back to the Token Visualizer tab on the main page to see this process in action. 
+        You can watch how different text gets split into tokens and explore the byte values for each token.
+      </p>
+    </div>
+  </div>
+
+  <div class="nav-link" style="margin-top: 30px;">
+    <a href="index.html">← Back to Token Total</a>
+  </div>
+</body>
+</html>

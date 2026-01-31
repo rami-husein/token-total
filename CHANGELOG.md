@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-01-31)
+- **DOCUMENTATION**: Created comprehensive "How It Works" explanation page
+  - New file: `how-it-works.html` - layman-friendly explanation of tokenization
+  - Step-by-step walkthrough of the complete tokenization process (5 main steps)
+  - Covers: text splitting, byte encoding, BPE algorithm, token ID assignment, decoding
+  - Visual demonstrations showing BPE merging process with concrete examples
+  - Explains token limits, API costs, and why tokenization matters
+  - Details on vocabulary structure and special tokens
+  - Follows retro-brutal design aesthetic matching main interface
+  - Added "How It Works" link in main navigation tabs
+  - Target audience: laymen and junior engineers wanting to understand the internals
+
 ### Fixed (2026-01-31)
 - **TEST SUITE**: Corrected incorrect test expectations in test suite
   - Root cause: Test file contained wrong expected token values that didn't match tiktoken reference implementation
