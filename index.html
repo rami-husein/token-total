@@ -375,15 +375,23 @@
     }
 
     .expected {
-      color: #943c23;
       font-family: monospace;
       font-weight: 900;
     }
 
     .actual {
-      color: #318b73;
       font-family: monospace;
       font-weight: 900;
+    }
+
+    .test.pass .expected,
+    .test.pass .actual {
+      color: #eaddac;
+    }
+
+    .test.fail .expected,
+    .test.fail .actual {
+      color: #26274e;
     }
 
     .summary {
