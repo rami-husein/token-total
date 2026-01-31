@@ -282,3 +282,43 @@ Remove all marketing/promotional content and focus purely on tool functionality.
 - All original functionality preserved
 
 ---
+
+## ADR-010: Custom Color Palette for Brand Identity
+
+**Date**: 2026-01-31
+
+**Context**: 
+The application originally used a purple-to-pink gradient color scheme (similar to many developer tools). To establish a unique visual identity and improve brand recognition, a custom color palette was requested.
+
+**Decision**: 
+Implement a custom 5-color palette across the entire application:
+- **Teal (#407880)**: Primary accent color for headings, borders, focus states, active tabs
+- **Dark Navy (#151920)**: Main text color and dark code backgrounds
+- **Brown (#724310)**: Secondary accent for gradients, error/fail states
+- **Tan (#a46726)**: Tertiary accent for errors and code strings
+- **Gray (#b4b3b7)**: Subtle UI elements, borders, secondary backgrounds
+
+**Rationale**:
+- Unique visual identity distinguishes Token Total from other developer tools
+- Teal/brown combination provides earthy, professional aesthetic
+- Colors maintain sufficient contrast for accessibility (WCAG standards)
+- Palette works well for both light and dark UI elements
+- Consistent application across all pages creates cohesive experience
+
+**Implementation**:
+- Updated all CSS color values in index.html, examples/simple.html, examples/advanced.html
+- Modified JavaScript token visualization colors (10-color palette derived from base colors)
+- Updated gradients from purple-pink to teal-brown
+- Changed test result indicators: teal for pass, tan/brown for fail
+- Applied to buttons, stat cards, borders, focus states, spinners, code blocks
+
+**Consequences**:
+- ✅ Unique, memorable brand identity
+- ✅ Professional, cohesive visual design
+- ✅ Maintains accessibility standards
+- ✅ Applied consistently across all UI surfaces
+- ✅ Token visualization colors harmonize with overall theme
+- ⚠️ Breaking change for users expecting purple theme (minor UX adjustment)
+- ⚠️ Future marketing materials should align with new color scheme
+
+---

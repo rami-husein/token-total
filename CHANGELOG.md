@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed (2026-01-31)
+- **Visual Redesign**: Applied new color palette across entire application
+  - Updated primary color scheme from purple/pink gradient to teal/brown/tan palette
+  - New colors: Teal (#407880), Dark Navy (#151920), Brown (#724310), Tan (#a46726), Gray (#b4b3b7)
+  - Applied to all UI elements: buttons, gradients, borders, focus states, test indicators
+  - Updated token visualization colors for better contrast with new theme
+  - Applied consistently across main app (index.html) and legacy example pages
+  - Maintained WCAG color contrast standards for accessibility
+
+### Changed (2026-01-31)
 - **UI Redesign**: Consolidated all functionality into a single-page application
   - Combined simple demo, advanced visualizer, tests, and library usage into one page with tab navigation
   - Removed marketing content - now a focused tool interface

@@ -34,6 +34,7 @@ Future features and improvements for Token Total.
 - ✅ Tab navigation: Simple Counter, Token Visualizer, Run Tests, Library Usage
 - ✅ Instant switching between features (no page reloads)
 - ✅ Integrated API documentation with syntax-highlighted examples
+- ✅ **Custom Color Palette**: Applied unique brand identity with teal/brown/tan color scheme across entire application
 
 ---
 
