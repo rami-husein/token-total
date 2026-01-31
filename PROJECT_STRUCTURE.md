@@ -96,41 +96,41 @@ Example: `IQ== 0` (byte 33, '!' character, rank 0)
 
 ## Examples (`examples/`)
 
-**`examples/simple.html`** (322 lines)
-- Basic token counter interface
-- Model selector (GPT-4o, GPT-4, GPT-3.5)
-- Real-time token counting
-- Displays: token count, character count, chars/token ratio
+**Note**: Legacy example files exist but the main demo is now in `index.html`.
 
-**`examples/advanced.html`**
-- Token visualization with color coding
-- Hover to see individual tokens
-- Byte-level breakdown
+**`examples/simple.html`** (322 lines - legacy)
+- Standalone basic token counter interface
+- Replaced by "Simple Counter" tab in main index.html
+
+**`examples/advanced.html`** (441 lines - legacy)
+- Standalone token visualization with color coding
+- Replaced by "Token Visualizer" tab in main index.html
 
 ## Tests
 
-**`test/index.html`**
-- Test suite comparing with tiktoken outputs
-- Multiple test cases
+**Note**: Test suite is now integrated into `index.html`.
 
-**`test-single-byte.html`** (NEW - 269 lines)
+**`test/index.html`** (161 lines - legacy)
+- Standalone test suite comparing with tiktoken outputs
+- Replaced by "Run Tests" tab in main index.html
+
+**`test-single-byte.html`** (269 lines)
 - Comprehensive debug test suite
-- 7 test cases:
-  1. Load encoding
-  2. Single character encoding
-  3. Simple word
-  4. Two words
-  5. Full sentence
-  6. Empty string
-  7. Unicode
+- 7 test cases for development/debugging
 - Visual pass/fail indicators
 - Detailed console logging
 
 ## Root Files
 
-**`index.html`**
-- Landing page
-- Project description and quick start
+**`index.html`** (~1050 lines)
+- Unified single-page application
+- Tab-based interface with 4 sections:
+  1. **Simple Counter** - Basic token counting with real-time updates
+  2. **Token Visualizer** - Color-coded token visualization with details
+  3. **Run Tests** - Test suite comparing outputs with tiktoken
+  4. **Library Usage** - Code examples and API documentation
+- Combines all functionality from separate demo and test pages
+- No marketing content - focused tool interface
 
 **`package.json`**
 - Project metadata
@@ -168,10 +168,11 @@ Example: `IQ== 0` (byte 33, '!' character, rank 0)
 |----------|-------|------------|
 | Source code | 5 JS files | ~50 KB |
 | Vocabulary files | 4 .tiktoken | ~7 MB |
-| Examples | 2 HTML | ~20 KB |
+| Main app | 1 HTML (index.html) | ~50 KB |
+| Legacy examples | 2 HTML | ~20 KB |
 | Tests | 2 HTML | ~15 KB |
 | Documentation | 5 MD files | ~30 KB |
-| **Total** | **18 files** | **~7.1 MB** |
+| **Total** | **19 files** | **~7.2 MB** |
 
 ## Key Design Principles
 

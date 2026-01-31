@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Token Total - Home</title>
+  <title>Token Total - OpenAI Token Counter</title>
   <style>
     * {
       margin: 0;
@@ -13,109 +13,349 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #f5f7fa;
+      color: #333;
       padding: 20px;
     }
 
-    .container {
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 20px;
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      padding: 50px;
-      max-width: 700px;
-      text-align: center;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
-      font-size: 3.5em;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 15px;
+      color: #667eea;
+      font-size: 2.5em;
+      margin-bottom: 10px;
     }
 
-    .tagline {
-      font-size: 1.3em;
+    .subtitle {
       color: #666;
-      margin-bottom: 40px;
+      font-size: 1.1em;
     }
 
-    .features {
-      text-align: left;
-      margin: 40px 0;
-      padding: 30px;
-      background: #f8f9fa;
+    .tabs {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      background: white;
       border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
 
-    .features h2 {
+    .tab-nav {
+      display: flex;
+      border-bottom: 2px solid #e0e0e0;
+      background: #f8f9fa;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 15px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-button:hover {
+      background: #e8e9ea;
+    }
+
+    .tab-button.active {
       color: #667eea;
-      margin-bottom: 15px;
+      background: white;
+      border-bottom-color: #667eea;
     }
 
-    .features ul {
-      list-style: none;
-      padding: 0;
+    .tab-content {
+      display: none;
+      padding: 30px;
     }
 
-    .features li {
-      padding: 8px 0;
-      color: #555;
+    .tab-content.active {
+      display: block;
     }
 
-    .features li:before {
-      content: "✓ ";
-      color: #667eea;
-      font-weight: bold;
-      margin-right: 8px;
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
     }
 
-    .links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Simple Demo Styles */
+    .controls {
+      display: flex;
       gap: 15px;
-      margin-top: 40px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
-    .link-card {
+    .control-group {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #555;
+      font-size: 0.9em;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: 'Courier New', monospace;
+      resize: vertical;
+      min-height: 250px;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .stats {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .stat {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 25px;
-      border-radius: 12px;
-      text-decoration: none;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
     }
 
-    .link-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    .stat-value {
+      font-size: 2.5em;
+      font-weight: bold;
+      display: block;
     }
 
-    .link-card h3 {
-      font-size: 1.3em;
-      margin-bottom: 8px;
-    }
-
-    .link-card p {
+    .stat-label {
       font-size: 0.9em;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+
+    /* Advanced Demo Styles */
+    .advanced-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 968px) {
+      .advanced-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 1.2em;
+    }
+
+    .token-display {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 15px;
+      min-height: 250px;
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+      overflow-wrap: break-word;
+      word-break: break-all;
+    }
+
+    .token {
+      display: inline;
+      padding: 2px 5px;
+      margin: 2px;
+      border-radius: 3px;
+      border: 1px solid;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .token:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    .token-info {
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .token-info.active {
+      display: block;
+    }
+
+    .token-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .token-info-row:last-child {
+      border-bottom: none;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.3s;
+      margin-top: 15px;
+    }
+
+    button:hover {
       opacity: 0.9;
     }
 
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* Test Styles */
+    .test {
+      margin: 10px 0;
+      padding: 15px;
+      border-left: 4px solid #666;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    .test.pass {
+      border-color: #4ec9b0;
+      background: #e8f5f2;
+    }
+
+    .test.fail {
+      border-color: #f48771;
+      background: #fef0ee;
+    }
+
+    .test-name {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .test.pass .test-name {
+      color: #2a6e5c;
+    }
+
+    .test.fail .test-name {
+      color: #c1442e;
+    }
+
+    .expected {
+      color: #c1442e;
+      font-family: monospace;
+    }
+
+    .actual {
+      color: #2a6e5c;
+      font-family: monospace;
+    }
+
+    .summary {
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .summary h2 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .summary pre {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    /* Library Usage Styles */
     .code-example {
       background: #2d2d2d;
       color: #d4d4d4;
       padding: 20px;
       border-radius: 8px;
-      text-align: left;
       font-family: 'Courier New', monospace;
-      font-size: 0.9em;
-      margin: 30px 0;
+      font-size: 0.95em;
+      margin: 20px 0;
       overflow-x: auto;
     }
 
@@ -124,62 +364,599 @@
     .code-example .comment { color: #6a9955; }
     .code-example .function { color: #dcdcaa; }
 
-    .footer {
-      margin-top: 40px;
-      color: #888;
-      font-size: 0.9em;
+    .usage-section {
+      margin-bottom: 30px;
+    }
+
+    .usage-section h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    .usage-section p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+      color: #555;
+    }
+
+    .error {
+      background: #f48771;
+      color: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="header">
     <h1>Token Total</h1>
-    <p class="tagline">
-      A vanilla JavaScript BPE tokenizer for static websites<br>
-      Count OpenAI tokens without a server
-    </p>
+    <p class="subtitle">Count OpenAI tokens in your browser - No server required</p>
+  </div>
 
-    <div class="features">
-      <h2>Why Token Total?</h2>
-      <ul>
-        <li>Zero dependencies - pure vanilla JavaScript</li>
-        <li>Works completely offline with browser caching</li>
-        <li>100% compatible with tiktoken</li>
-        <li>Supports all OpenAI models (GPT-4o, GPT-4, GPT-3.5, etc.)</li>
-        <li>Perfect for static sites on GitHub Pages, Netlify, Vercel</li>
-      </ul>
+  <div id="loading" class="tabs">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Loading tokenizer...</div>
+    </div>
+  </div>
+
+  <div id="app" class="tabs" style="display: none;">
+    <div class="tab-nav">
+      <button class="tab-button active" data-tab="simple">Simple Counter</button>
+      <button class="tab-button" data-tab="advanced">Token Visualizer</button>
+      <button class="tab-button" data-tab="tests">Run Tests</button>
+      <button class="tab-button" data-tab="usage">Library Usage</button>
     </div>
 
-    <div class="code-example">
-<span class="keyword">import</span> { <span class="function">encodingForModel</span> } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
+    <!-- Simple Demo Tab -->
+    <div id="simple" class="tab-content active">
+      <div class="controls">
+        <div class="control-group">
+          <label for="simple-model">Model:</label>
+          <select id="simple-model">
+            <optgroup label="GPT-4o">
+              <option value="gpt-4o" selected>gpt-4o</option>
+              <option value="gpt-4o-mini">gpt-4o-mini</option>
+            </optgroup>
+            <optgroup label="GPT-4">
+              <option value="gpt-4">gpt-4</option>
+              <option value="gpt-4-turbo">gpt-4-turbo</option>
+            </optgroup>
+            <optgroup label="GPT-3.5">
+              <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="simple-encoding">Encoding:</label>
+          <select id="simple-encoding">
+            <option value="o200k_base">o200k_base (GPT-4o)</option>
+            <option value="cl100k_base">cl100k_base (GPT-4)</option>
+            <option value="p50k_base">p50k_base (GPT-3)</option>
+            <option value="r50k_base">r50k_base (older)</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="simple-input">Enter text to tokenize:</label>
+      <textarea 
+        id="simple-input" 
+        placeholder="Type or paste your text here...">Hello, world! This is a demo of the token counter.</textarea>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value" id="simple-tokenCount">0</span>
+          <span class="stat-label">Tokens</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="simple-charCount">0</span>
+          <span class="stat-label">Characters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="simple-ratio">0.0</span>
+          <span class="stat-label">Chars/Token</span>
+        </div>
+      </div>
+
+      <div id="simple-error" class="error" style="display: none;"></div>
+    </div>
+
+    <!-- Advanced Demo Tab -->
+    <div id="advanced" class="tab-content">
+      <div class="controls">
+        <div class="control-group">
+          <label for="advanced-model">Model:</label>
+          <select id="advanced-model">
+            <option value="gpt-4o" selected>gpt-4o</option>
+            <option value="gpt-4">gpt-4</option>
+            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="advanced-encoding">Encoding:</label>
+          <select id="advanced-encoding">
+            <option value="o200k_base">o200k_base</option>
+            <option value="cl100k_base">cl100k_base</option>
+            <option value="p50k_base">p50k_base</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value" id="advanced-tokenCount">0</span>
+          <span class="stat-label">Tokens</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="advanced-charCount">0</span>
+          <span class="stat-label">Characters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="advanced-ratio">0.0</span>
+          <span class="stat-label">Chars/Token</span>
+        </div>
+      </div>
+
+      <button onclick="copyTokens()">Copy Token IDs</button>
+
+      <div class="advanced-layout">
+        <div class="panel">
+          <h2>Input Text</h2>
+          <textarea id="advanced-input" placeholder="Type or paste your text here...">The quick brown fox jumps over the lazy dog. 🦊</textarea>
+        </div>
+
+        <div class="panel">
+          <h2>Tokenized Output</h2>
+          <div id="token-display" class="token-display">Tokens will appear here...</div>
+          <div id="token-info" class="token-info"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tests Tab -->
+    <div id="tests" class="tab-content">
+      <div id="test-results"></div>
+      <div id="test-summary" class="summary" style="display: none;"></div>
+    </div>
+
+    <!-- Library Usage Tab -->
+    <div id="usage" class="tab-content">
+      <div class="usage-section">
+        <h3>Installation</h3>
+        <p>No installation needed! Just include the module in your HTML:</p>
+        <div class="code-example"><span class="keyword">&lt;script</span> <span class="function">type</span>=<span class="string">"module"</span><span class="keyword">&gt;</span>
+  <span class="keyword">import</span> { encodingForModel } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
+<span class="keyword">&lt;/script&gt;</span></div>
+      </div>
+
+      <div class="usage-section">
+        <h3>Basic Usage</h3>
+        <p>Count tokens for a specific model:</p>
+        <div class="code-example"><span class="keyword">import</span> { <span class="function">encodingForModel</span> } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
 
 <span class="keyword">const</span> enc = <span class="keyword">await</span> <span class="function">encodingForModel</span>(<span class="string">'gpt-4'</span>);
 <span class="keyword">const</span> tokens = enc.<span class="function">encode</span>(<span class="string">'Hello, world!'</span>);
 
-<span class="comment">// [9906, 11, 1917, 0]</span>
-    </div>
+console.<span class="function">log</span>(tokens); <span class="comment">// [9906, 11, 1917, 0]</span>
+console.<span class="function">log</span>(tokens.length); <span class="comment">// 4</span></div>
+      </div>
 
-    <div class="links">
-      <a href="examples/simple.html" class="link-card">
-        <h3>Simple Demo</h3>
-        <p>Basic token counter with live updates</p>
-      </a>
+      <div class="usage-section">
+        <h3>Encode & Decode</h3>
+        <p>Convert between text and tokens:</p>
+        <div class="code-example"><span class="keyword">const</span> enc = <span class="keyword">await</span> <span class="function">encodingForModel</span>(<span class="string">'gpt-4'</span>);
 
-      <a href="examples/advanced.html" class="link-card">
-        <h3>Advanced Demo</h3>
-        <p>Visualize tokens with colors and details</p>
-      </a>
+<span class="comment">// Encode text to tokens</span>
+<span class="keyword">const</span> tokens = enc.<span class="function">encode</span>(<span class="string">'Hello, world!'</span>);
 
-      <a href="test/index.html" class="link-card">
-        <h3>Run Tests</h3>
-        <p>Verify compatibility with tiktoken</p>
-      </a>
-    </div>
+<span class="comment">// Decode tokens back to text</span>
+<span class="keyword">const</span> text = enc.<span class="function">decode</span>(tokens);
+console.<span class="function">log</span>(text); <span class="comment">// "Hello, world!"</span>
 
-    <div class="footer">
-      Built from scratch by analyzing tiktoken's implementation<br>
-      Open source • MIT License
+<span class="comment">// Decode to bytes</span>
+<span class="keyword">const</span> bytes = enc.<span class="function">decodeBytes</span>(tokens);
+console.<span class="function">log</span>(bytes); <span class="comment">// Uint8Array [72, 101, 108, 108, 111, ...]</span></div>
+      </div>
+
+      <div class="usage-section">
+        <h3>Get Encoding by Name</h3>
+        <p>Use a specific encoding directly:</p>
+        <div class="code-example"><span class="keyword">import</span> { <span class="function">getEncoding</span> } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
+
+<span class="keyword">const</span> enc = <span class="keyword">await</span> <span class="function">getEncoding</span>(<span class="string">'cl100k_base'</span>);
+<span class="keyword">const</span> tokens = enc.<span class="function">encode</span>(<span class="string">'Hello!'</span>);</div>
+      </div>
+
+      <div class="usage-section">
+        <h3>Count Tokens</h3>
+        <p>Quick token counting utility:</p>
+        <div class="code-example"><span class="keyword">import</span> { <span class="function">countTokens</span> } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
+
+<span class="keyword">const</span> count = <span class="keyword">await</span> <span class="function">countTokens</span>(<span class="string">'Hello, world!'</span>, <span class="string">'gpt-4'</span>);
+console.<span class="function">log</span>(count); <span class="comment">// 4</span></div>
+      </div>
+
+      <div class="usage-section">
+        <h3>Special Tokens</h3>
+        <p>Handle special tokens in your text:</p>
+        <div class="code-example"><span class="keyword">const</span> enc = <span class="keyword">await</span> <span class="function">encodingForModel</span>(<span class="string">'gpt-4'</span>);
+
+<span class="comment">// Allow specific special tokens</span>
+<span class="keyword">const</span> tokens = enc.<span class="function">encode</span>(<span class="string">'Hello &lt;|endoftext|&gt;'</span>, {
+  allowedSpecial: <span class="keyword">new</span> <span class="function">Set</span>([<span class="string">'&lt;|endoftext|&gt;'</span>])
+});
+
+<span class="comment">// Allow all special tokens</span>
+<span class="keyword">const</span> tokens2 = enc.<span class="function">encode</span>(<span class="string">'text &lt;|endoftext|&gt;'</span>, {
+  allowedSpecial: <span class="string">'all'</span>
+});</div>
+      </div>
+
+      <div class="usage-section">
+        <h3>List Available Models & Encodings</h3>
+        <p>Discover supported models and encodings:</p>
+        <div class="code-example"><span class="keyword">import</span> { <span class="function">listModelNames</span>, <span class="function">listEncodingNames</span> } <span class="keyword">from</span> <span class="string">'./src/index.js'</span>;
+
+console.<span class="function">log</span>(<span class="function">listModelNames</span>());
+<span class="comment">// ['gpt-4', 'gpt-4o', 'gpt-3.5-turbo', ...]</span>
+
+console.<span class="function">log</span>(<span class="function">listEncodingNames</span>());
+<span class="comment">// ['cl100k_base', 'o200k_base', 'p50k_base', ...]</span></div>
+      </div>
     </div>
   </div>
+
+  <script type="module">
+    import { encodingForModel, getEncoding } from './src/index.js';
+
+    let simpleEncoding = null;
+    let advancedEncoding = null;
+    let advancedTokens = [];
+    let updateTimeout = null;
+
+    const colors = [
+      '#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF',
+      '#FFB3E6', '#E6B3FF', '#B3D9FF', '#FFD6A5', '#CAFFBF'
+    ];
+
+    // Initialize
+    async function init() {
+      try {
+        simpleEncoding = await encodingForModel('gpt-4o');
+        advancedEncoding = simpleEncoding;
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+
+        setupTabs();
+        setupSimpleDemo();
+        setupAdvancedDemo();
+        
+        // Initial updates
+        updateSimpleCount();
+        updateAdvancedDisplay();
+      } catch (err) {
+        document.getElementById('loading').innerHTML = 
+          `<div class="error">Failed to load tokenizer: ${err.message}</div>`;
+      }
+    }
+
+    // Tab switching
+    function setupTabs() {
+      const buttons = document.querySelectorAll('.tab-button');
+      const contents = document.querySelectorAll('.tab-content');
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tabName = button.dataset.tab;
+          
+          buttons.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          
+          button.classList.add('active');
+          document.getElementById(tabName).classList.add('active');
+
+          // Run tests when switching to tests tab
+          if (tabName === 'tests' && document.getElementById('test-results').children.length === 0) {
+            runTests();
+          }
+        });
+      });
+    }
+
+    // Simple Demo
+    function setupSimpleDemo() {
+      document.getElementById('simple-input').addEventListener('input', () => {
+        clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(updateSimpleCount, 300);
+      });
+
+      document.getElementById('simple-model').addEventListener('change', async (e) => {
+        try {
+          simpleEncoding = await encodingForModel(e.target.value);
+          updateSimpleCount();
+        } catch (err) {
+          showSimpleError(err.message);
+        }
+      });
+
+      document.getElementById('simple-encoding').addEventListener('change', async (e) => {
+        try {
+          simpleEncoding = await getEncoding(e.target.value);
+          updateSimpleCount();
+        } catch (err) {
+          showSimpleError(err.message);
+        }
+      });
+    }
+
+    function updateSimpleCount() {
+      const text = document.getElementById('simple-input').value;
+      const charCount = text.length;
+
+      try {
+        const tokens = simpleEncoding.encode(text);
+        const tokenCount = tokens.length;
+        const ratio = tokenCount > 0 ? (charCount / tokenCount).toFixed(1) : 0;
+
+        document.getElementById('simple-tokenCount').textContent = tokenCount;
+        document.getElementById('simple-charCount').textContent = charCount;
+        document.getElementById('simple-ratio').textContent = ratio;
+
+        document.getElementById('simple-error').style.display = 'none';
+      } catch (err) {
+        showSimpleError(err.message);
+      }
+    }
+
+    function showSimpleError(message) {
+      const errorEl = document.getElementById('simple-error');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+
+    // Advanced Demo
+    function setupAdvancedDemo() {
+      document.getElementById('advanced-input').addEventListener('input', () => {
+        clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(updateAdvancedDisplay, 300);
+      });
+
+      document.getElementById('advanced-model').addEventListener('change', async (e) => {
+        advancedEncoding = await encodingForModel(e.target.value);
+        updateAdvancedDisplay();
+      });
+
+      document.getElementById('advanced-encoding').addEventListener('change', async (e) => {
+        advancedEncoding = await getEncoding(e.target.value);
+        updateAdvancedDisplay();
+      });
+    }
+
+    function updateAdvancedDisplay() {
+      const text = document.getElementById('advanced-input').value;
+      const charCount = text.length;
+
+      try {
+        advancedTokens = advancedEncoding.encode(text);
+        const tokenCount = advancedTokens.length;
+        const ratio = tokenCount > 0 ? (charCount / tokenCount).toFixed(1) : 0;
+
+        document.getElementById('advanced-tokenCount').textContent = tokenCount;
+        document.getElementById('advanced-charCount').textContent = charCount;
+        document.getElementById('advanced-ratio').textContent = ratio;
+
+        visualizeTokens();
+      } catch (err) {
+        document.getElementById('token-display').textContent = `Error: ${err.message}`;
+      }
+    }
+
+    function visualizeTokens() {
+      const tokenBytes = advancedEncoding.decodeTokensBytes(advancedTokens);
+      const display = document.getElementById('token-display');
+      display.innerHTML = '';
+
+      tokenBytes.forEach((bytes, index) => {
+        const tokenId = advancedTokens[index];
+        const text = new TextDecoder().decode(bytes);
+        const displayText = text.replace(/\n/g, '↵\n').replace(/\t/g, '→\t').replace(/ /g, '·');
+        
+        const color = colors[tokenId % colors.length];
+        const borderColor = darkenColor(color, 20);
+        
+        const span = document.createElement('span');
+        span.className = 'token';
+        span.textContent = displayText;
+        span.style.backgroundColor = color;
+        span.style.borderColor = borderColor;
+        span.title = `Token #${index}: ID ${tokenId}`;
+        span.onclick = () => showTokenInfo(index, tokenId, text, bytes);
+        
+        display.appendChild(span);
+      });
+    }
+
+    function showTokenInfo(index, tokenId, text, bytes) {
+      const info = document.getElementById('token-info');
+      const bytesStr = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
+      
+      info.innerHTML = `
+        <div class="token-info-row">
+          <strong>Token Index:</strong>
+          <span>${index}</span>
+        </div>
+        <div class="token-info-row">
+          <strong>Token ID:</strong>
+          <span>${tokenId}</span>
+        </div>
+        <div class="token-info-row">
+          <strong>Text:</strong>
+          <span>${JSON.stringify(text)}</span>
+        </div>
+        <div class="token-info-row">
+          <strong>Bytes:</strong>
+          <span>${bytesStr}</span>
+        </div>
+        <div class="token-info-row">
+          <strong>Length:</strong>
+          <span>${bytes.length} bytes</span>
+        </div>
+      `;
+      info.classList.add('active');
+    }
+
+    function darkenColor(hex, percent) {
+      const num = parseInt(hex.slice(1), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) - amt;
+      const G = (num >> 8 & 0x00FF) - amt;
+      const B = (num & 0x0000FF) - amt;
+      return '#' + (
+        0x1000000 + 
+        (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+        (B < 255 ? B < 1 ? 0 : B : 255)
+      ).toString(16).slice(1);
+    }
+
+    window.copyTokens = function() {
+      const text = JSON.stringify(advancedTokens);
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Token IDs copied to clipboard!');
+      });
+    };
+
+    // Tests
+    async function runTests() {
+      const TESTS = [
+        {
+          name: 'GPT-2: hello world',
+          encoding: 'r50k_base',
+          text: 'hello world',
+          expected: [31373, 995],
+        },
+        {
+          name: 'cl100k_base: hello world',
+          encoding: 'cl100k_base',
+          text: 'hello world',
+          expected: [15339, 1917],
+        },
+        {
+          name: 'Empty string',
+          encoding: 'cl100k_base',
+          text: '',
+          expected: [],
+        },
+        {
+          name: 'Single character',
+          encoding: 'cl100k_base',
+          text: 'a',
+          expected: [64],
+        },
+        {
+          name: 'Numbers',
+          encoding: 'cl100k_base',
+          text: '12345',
+          expected: [4513, 1774],
+        },
+        {
+          name: 'Unicode',
+          encoding: 'cl100k_base',
+          text: '你好',
+          expected: [57668, 25001],
+        },
+        {
+          name: 'Special characters',
+          encoding: 'cl100k_base',
+          text: '!@#$%',
+          expected: [0, 31, 49177],
+        },
+        {
+          name: 'Newlines',
+          encoding: 'cl100k_base',
+          text: 'hello\nworld',
+          expected: [15339, 198, 14957],
+        },
+        {
+          name: 'Special token allowed',
+          encoding: 'cl100k_base',
+          text: 'hello <|endoftext|>',
+          expected: [15339, 220, 100257],
+          options: { allowedSpecial: new Set(['<|endoftext|>']) },
+        },
+      ];
+
+      const results = document.getElementById('test-results');
+      const summary = document.getElementById('test-summary');
+      results.innerHTML = '';
+      let passed = 0;
+      let failed = 0;
+
+      for (const test of TESTS) {
+        const testEl = document.createElement('div');
+        testEl.className = 'test';
+
+        try {
+          const encoding = await getEncoding(test.encoding);
+          const actual = encoding.encode(test.text, test.options || {});
+          
+          const match = JSON.stringify(actual) === JSON.stringify(test.expected);
+          
+          if (match) {
+            testEl.classList.add('pass');
+            testEl.innerHTML = `
+              <div class="test-name">✓ ${test.name}</div>
+              <div>Result: <span class="actual">${JSON.stringify(actual)}</span></div>
+            `;
+            passed++;
+          } else {
+            testEl.classList.add('fail');
+            testEl.innerHTML = `
+              <div class="test-name">✗ ${test.name}</div>
+              <div>Expected: <span class="expected">${JSON.stringify(test.expected)}</span></div>
+              <div>Actual: <span class="actual">${JSON.stringify(actual)}</span></div>
+            `;
+            failed++;
+          }
+
+          const decoded = encoding.decode(actual);
+          if (decoded !== test.text && test.text !== '') {
+            testEl.classList.remove('pass');
+            testEl.classList.add('fail');
+            testEl.innerHTML += `<div style="color: #c1442e;">Decode mismatch: "${decoded}" !== "${test.text}"</div>`;
+            if (match) {
+              passed--;
+              failed++;
+            }
+          }
+
+        } catch (err) {
+          testEl.classList.add('fail');
+          testEl.innerHTML = `
+            <div class="test-name">✗ ${test.name}</div>
+            <div style="color: #c1442e;">Error: ${err.message}</div>
+          `;
+          failed++;
+        }
+
+        results.appendChild(testEl);
+      }
+
+      summary.style.display = 'block';
+      summary.innerHTML = `
+        <h2>Test Summary</h2>
+        <pre>Total: ${passed + failed}
+Passed: ${passed}
+Failed: ${failed}
+Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%</pre>
+      `;
+    }
+
+    init();
+  </script>
 </body>
 </html>

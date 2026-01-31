@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-01-31)
+- **UI Redesign**: Consolidated all functionality into a single-page application
+  - Combined simple demo, advanced visualizer, tests, and library usage into one page with tab navigation
+  - Removed marketing content - now a focused tool interface
+  - All demos and tests accessible via tabs: "Simple Counter", "Token Visualizer", "Run Tests", "Library Usage"
+  - Legacy standalone demo pages (`examples/simple.html`, `examples/advanced.html`, `test/index.html`) remain for backward compatibility but are no longer the primary interface
+  - Benefits: Faster navigation, no page reloads, better UX for exploring features
+
 ### Fixed (2026-01-30)
 - **CRITICAL**: Fixed JavaScript regex compilation errors for cl100k_base, p50k_base, and r50k_base encodings
   - Root cause: Regex patterns used possessive quantifiers (`++`, `?+`, `*+`) which are not supported in JavaScript

@@ -181,14 +181,18 @@ Files are cached in IndexedDB after first load for offline use.
 
 ## Examples
 
-### Simple Token Counter
-`examples/simple.html` - Basic token counting interface
+Open `index.html` in your browser for a complete interactive demo with:
+- **Simple Counter**: Basic token counting with real-time updates
+- **Token Visualizer**: Color-coded token display with detailed information
+- **Run Tests**: Test suite comparing outputs with tiktoken
+- **Library Usage**: API documentation with code examples
 
-### Advanced Visualizer
-`examples/advanced.html` - Color-coded token visualization with details
+### Legacy Standalone Pages
+- `examples/simple.html` - Standalone simple counter
+- `examples/advanced.html` - Standalone token visualizer
+- `test/index.html` - Standalone test suite
 
-### Tests
-`test/index.html` - Test suite comparing outputs with tiktoken
+**Note**: The main interface is now the single-page application at `index.html`.
 
 ## Performance
 
@@ -228,18 +232,25 @@ Token Total prioritizes **ease of deployment** and **zero-dependency** over raw 
 ## Development
 
 ```bash
-# Serve examples
+# Serve the application
 python -m http.server 8000
 
-# Run tests
-open http://localhost:8000/test/index.html
+# Open in browser
+open http://localhost:8000
+
+# The main interface (index.html) includes:
+# - Simple Counter tab
+# - Token Visualizer tab
+# - Run Tests tab
+# - Library Usage tab
 
 # Project structure
 token-total/
 ├── src/                # Source code
-├── examples/           # Demo pages
-├── test/               # Tests
-├── package.json        # Metadata
+├── public/             # Vocabulary files
+├── examples/           # Legacy demo pages
+├── test/               # Legacy test page
+├── index.html          # Main single-page app
 └── README.md          # This file
 ```
 

@@ -28,6 +28,13 @@ Future features and improvements for Token Total.
 - ✅ Added comprehensive debug logging
 - ✅ Fixed regex compilation errors (possessive quantifiers incompatible with JavaScript)
 
+### UI/UX Improvements (2026-01-31)
+- ✅ **Single-Page Application**: Consolidated all demos and tests into unified tab-based interface
+- ✅ Removed marketing content - focused purely on tool functionality
+- ✅ Tab navigation: Simple Counter, Token Visualizer, Run Tests, Library Usage
+- ✅ Instant switching between features (no page reloads)
+- ✅ Integrated API documentation with syntax-highlighted examples
+
 ---
 
 ## Near Term (Next 1-2 Weeks)

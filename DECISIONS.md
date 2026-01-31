@@ -234,3 +234,51 @@ Distribute as native ES modules without any build step or bundler.
 - ⚠️ Requires HTTP server (can't use file:// protocol)
 - ⚠️ No automatic tree-shaking (users load all code)
 - ⚠️ No TypeScript type checking (could add .d.ts files later)
+
+---
+
+## ADR-009: Single-Page Application with Tab-Based Navigation
+
+**Date**: 2026-01-31
+
+**Context**: 
+The original design had separate HTML pages for each demo (simple.html, advanced.html) and tests (test/index.html), with a landing page (index.html) that had marketing content and links to each page. Users had to navigate between pages, causing page reloads and context switching.
+
+**Decision**: 
+Consolidate all functionality into a single-page application (index.html) with tab-based navigation for four sections:
+1. Simple Counter - Basic token counting
+2. Token Visualizer - Advanced visualization with color-coded tokens
+3. Run Tests - Integrated test suite
+4. Library Usage - API documentation with code examples
+
+Remove all marketing/promotional content and focus purely on tool functionality.
+
+**Rationale**:
+- **Better UX**: No page reloads, instant tab switching, maintained state
+- **Focused purpose**: This is a developer tool, not a marketing site
+- **Discoverability**: All features visible in tabs, easier to explore
+- **Reduced friction**: Users can quickly compare outputs across demos
+- **Maintenance**: Single HTML file easier to maintain than multiple pages
+- **Coherent experience**: All functionality feels like one cohesive application
+- Legacy pages remain for backward compatibility/direct linking
+
+**Consequences**:
+- ✅ Faster navigation (no page reloads)
+- ✅ Better user experience with instant feedback
+- ✅ All features easily discoverable
+- ✅ Cleaner, more focused interface
+- ✅ Single file to maintain for primary UI
+- ✅ Tests run automatically when tab is activated
+- ⚠️ Larger initial page load (~50KB vs ~10KB for landing page)
+- ⚠️ All JavaScript loads upfront (but still async)
+- ⚠️ Legacy standalone pages may confuse users if they find them directly
+- ✅ Mitigation: Legacy pages still functional for backward compatibility
+
+**Implementation Details**:
+- Pure JavaScript tab switching (no framework)
+- Separate encoding instances for simple/advanced demos (independent state)
+- Lazy test execution (only runs when Tests tab is opened)
+- Shared styles with consistent design system
+- All original functionality preserved
+
+---
