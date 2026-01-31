@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Follows retro-brutal design aesthetic matching main interface
   - Added "How It Works" link in main navigation tabs
   - Target audience: laymen and junior engineers wanting to understand the internals
+  - Model-agnostic language (based on tiktoken, examples use GPT models)
+  - Removed vendor-specific pricing references for broader applicability
 
 ### Fixed (2026-01-31)
 - **TEST SUITE**: Corrected incorrect test expectations in test suite

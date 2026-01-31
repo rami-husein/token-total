@@ -254,11 +254,11 @@
     <h2>What is Tokenization?</h2>
     <p>
       Tokenization is the process of converting text into numbers that language models can process. 
-      When you type "Hello, world!" into ChatGPT, it does not see the text directly. Instead, it sees a sequence of numbers like <code>[9906, 11, 1917, 0]</code>.
+      When you enter "Hello, world!" into a language model, it does not see the text directly. Instead, it sees a sequence of numbers like <code>[9906, 11, 1917, 0]</code>.
     </p>
     <p>
       Each number represents a token, which is a chunk of text. A token can be a whole word, part of a word, a single character, or even punctuation.
-      The model was trained on billions of these tokens, learning patterns and relationships between them.
+      Models are trained on billions of these tokens, learning patterns and relationships between them.
     </p>
 
     <h2>The Complete Tokenization Process</h2>
@@ -425,13 +425,14 @@ Final result: [9906]
     <h3>Token Limits</h3>
     <p>
       Language models have a maximum context window measured in tokens, not characters. 
-      GPT-4 can handle 8,192 tokens (in the base version) or 128,000 tokens (in the extended version).
-      If your conversation exceeds this limit, older messages are removed from context.
+      For example, some models can handle 8,192 tokens while others support 128,000 or more.
+      If your input exceeds this limit, content may be truncated or older messages removed from context.
     </p>
 
     <h3>API Costs</h3>
     <p>
-      OpenAI charges based on token count, not character count or word count. Understanding tokenization helps you estimate costs:
+      Many language model APIs charge based on token count, not character count or word count. Understanding tokenization helps you estimate usage costs.
+      Token counts vary by content type:
     </p>
     <ul>
       <li>English text: typically 1 token per 4 characters (0.75 words per token)</li>
@@ -450,13 +451,13 @@ Final result: [9906]
     <div class="note">
       <div class="note-title">Different Models, Different Vocabularies</div>
       <p>
-        Each model family uses a different vocabulary file:
+        Token Total is based on tiktoken and supports multiple vocabulary files. Each model family uses a different vocabulary:
       </p>
       <ul>
-        <li><strong>GPT-4o:</strong> o200k_base vocabulary with 200,019 tokens</li>
-        <li><strong>GPT-4:</strong> cl100k_base vocabulary with 100,277 tokens</li>
-        <li><strong>GPT-3.5:</strong> cl100k_base vocabulary (same as GPT-4)</li>
-        <li><strong>GPT-3:</strong> p50k_base vocabulary with 50,281 tokens</li>
+        <li><strong>o200k_base:</strong> 200,019 tokens (used by GPT-4o models)</li>
+        <li><strong>cl100k_base:</strong> 100,277 tokens (used by GPT-4 and GPT-3.5 models)</li>
+        <li><strong>p50k_base:</strong> 50,281 tokens (used by GPT-3 models)</li>
+        <li><strong>r50k_base:</strong> 50,257 tokens (used by GPT-2 models)</li>
       </ul>
       <p>
         Larger vocabularies can represent text more efficiently (fewer tokens), but require more model parameters.
@@ -494,7 +495,7 @@ Final result: [9906]
       <li>The BPE algorithm merges frequent byte pairs into single tokens, making common words and patterns more efficient.</li>
       <li>Different models use different vocabularies, so the same text may produce different token counts.</li>
       <li>Token count directly impacts API costs, context limits, and model performance.</li>
-      <li>Token Total implements this entire process in your browser using the same vocabulary files as OpenAI's models.</li>
+      <li>Token Total is based on tiktoken and implements this entire process in your browser using the same vocabulary files.</li>
     </ol>
 
     <div class="note">
