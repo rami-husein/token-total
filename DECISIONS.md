@@ -10,7 +10,61 @@ Each decision follows this structure:
 
 ---
 
-## ADR-001: Use Direct Base64 Keys for Token Storage
+## ADR-012: Test Expectations Must Match Reference Implementation
+
+**Date**: 2026-01-31
+
+**Context**: 
+Two test cases were failing in the test suite:
+1. Unicode test: "你好" (Chinese characters) expected `[57668, 25001]`, actual `[57668, 53901]`
+2. Special characters test: "!@#$%" expected `[0, 31, 49177]`, actual `[0, 31, 49177, 4]`
+
+Initial investigation suggested the BPE algorithm might have bugs since the outputs didn't match test expectations. However, the implementation was based on tiktoken's reference implementation and thoroughly tested during development.
+
+**Decision**: 
+Verify all test expectations against OpenAI's tiktoken Python library (the canonical reference implementation) before assuming implementation bugs. Update test expectations to match verified outputs.
+
+**Investigation Results**:
+- Installed and ran tiktoken Python library for verification
+- Confirmed actual outputs match tiktoken exactly:
+  - "你好" → `[57668, 53901]` ✓ (token 53901 = "好" character)
+  - "!@#$%" → `[0, 31, 49177, 4]` ✓ (token 4 = "%" character)
+- Test expectations were incorrect:
+  - Token 25001 = "928" (ASCII string, unrelated to Chinese characters)
+  - Missing token 4 for the "%" character
+- Implementation was 100% correct all along
+
+**Fix Applied**:
+- Updated `test/index.html` lines 68, 74 with correct expectations
+- Updated `index.html` lines 957, 963 with correct expectations
+- All 9 test cases now pass
+
+**Rationale**:
+- Test expectations should always be verified against canonical implementation
+- "Failing tests" don't always indicate code bugs - can indicate test bugs
+- When porting algorithms, reference implementation is source of truth
+- Investigation revealed implementation quality was high - tests needed fixing
+
+**Consequences**:
+- ✅ All tests now pass (9/9 success rate)
+- ✅ Implementation validated as correct
+- ✅ Test suite now serves as proper regression protection
+- ✅ Increased confidence in tokenizer accuracy
+- ✅ Documented process for future test verification
+- ⚠️ Time spent investigating non-existent bug (but valuable validation)
+- 📚 Lesson: Always verify test expectations when porting algorithms
+
+**Testing Methodology**:
+```python
+import tiktoken
+enc = tiktoken.get_encoding("cl100k_base")
+tokens = enc.encode("你好")  # [57668, 53901] ✓
+```
+
+This ADR establishes that test expectations must be verified against reference implementations, especially when test failures seem surprising given thorough initial implementation.
+
+---
+
 
 **Date**: 2026-01-30
 

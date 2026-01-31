@@ -950,18 +950,18 @@ console.<span class="function">log</span>(<span class="function">listEncodingNam
           text: '12345',
           expected: [4513, 1774],
         },
-        {
-          name: 'Unicode',
-          encoding: 'cl100k_base',
-          text: '你好',
-          expected: [57668, 25001],
-        },
-        {
-          name: 'Special characters',
-          encoding: 'cl100k_base',
-          text: '!@#$%',
-          expected: [0, 31, 49177],
-        },
+          {
+            name: 'Unicode',
+            encoding: 'cl100k_base',
+            text: '你好',
+            expected: [57668, 53901],
+          },
+          {
+            name: 'Special characters',
+            encoding: 'cl100k_base',
+            text: '!@#$%',
+            expected: [0, 31, 49177, 4],
+          },
         {
           name: 'Newlines',
           encoding: 'cl100k_base',

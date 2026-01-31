@@ -41,6 +41,14 @@ Future features and improvements for Token Total.
   - Flat colors with high contrast, no gradients
   - Bold, memorable visual identity
 
+### Test Suite Validation (2026-01-31)
+- ✅ **Fixed Incorrect Test Expectations**: Corrected two failing test cases
+  - Verified implementation against tiktoken Python reference library
+  - Updated Unicode test: "你好" now expects `[57668, 53901]` (was incorrectly `[57668, 25001]`)
+  - Updated Special characters test: "!@#$%" now expects `[0, 31, 49177, 4]` (was incorrectly `[0, 31, 49177]`)
+  - All 9 tests now pass with 100% success rate
+  - Confirmed implementation matches tiktoken exactly
+
 ---
 
 ## Near Term (Next 1-2 Weeks)

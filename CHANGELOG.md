@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-01-31)
+- **TEST SUITE**: Corrected incorrect test expectations in test suite
+  - Root cause: Test file contained wrong expected token values that didn't match tiktoken reference implementation
+  - Fixed Unicode test: "你好" now expects `[57668, 53901]` instead of incorrect `[57668, 25001]`
+    - Token 57668 = "你" (U+4F60)
+    - Token 53901 = "好" (U+597D) 
+    - Previous expectation token 25001 = "928" (ASCII string, completely unrelated)
+  - Fixed Special characters test: "!@#$%" now expects `[0, 31, 49177, 4]` instead of incorrect `[0, 31, 49177]`
+    - Token 0 = "!"
+    - Token 31 = "@"
+    - Token 49177 = "#$" (merged BPE token)
+    - Token 4 = "%" (was incorrectly omitted)
+  - Verified all test expectations against tiktoken Python library
+  - Updated both `test/index.html` and `index.html` test suites
+  - Impact: All 9 test cases now pass - implementation was correct, only test expectations were wrong
+
 ### Changed (2026-01-31)
 - **MAJOR VISUAL REDESIGN**: Retro-brutal aesthetic with custom color palette
   - Complete design overhaul from modern/clean to brutalist style

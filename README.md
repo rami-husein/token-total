@@ -2,7 +2,7 @@
 
 **A vanilla JavaScript implementation of tiktoken (BPE tokenizer) for static websites**
 
-Token Total is a pure JavaScript port of OpenAI's tiktoken library, designed to run entirely in the browser without any server-side dependencies. Perfect for building token counters, text analyzers, and other tools that need to work with OpenAI API token limits.
+Token Total is a pure JavaScript port of OpenAI's [tiktoken](https://github.com/openai/tiktoken) library, designed to run entirely in the browser without any server-side dependencies. Perfect for building token counters, text analyzers, and other tools that need to work with OpenAI API token limits.
 
 ## Features
 
