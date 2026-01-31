@@ -8,13 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed (2026-01-31)
-- **Visual Redesign**: Applied new color palette across entire application
-  - Updated primary color scheme from purple/pink gradient to teal/brown/tan palette
-  - New colors: Teal (#407880), Dark Navy (#151920), Brown (#724310), Tan (#a46726), Gray (#b4b3b7)
-  - Applied to all UI elements: buttons, gradients, borders, focus states, test indicators
-  - Updated token visualization colors for better contrast with new theme
-  - Applied consistently across main app (index.html) and legacy example pages
-  - Maintained WCAG color contrast standards for accessibility
+- **MAJOR VISUAL REDESIGN**: Retro-brutal aesthetic with custom color palette
+  - Complete design overhaul from modern/clean to brutalist style
+  - **Typography**: Arial Black with heavy font-weights (900), uppercase text, tight letter-spacing
+  - **New Color Palette** (retro theme):
+    - Dark Brown (#943c23) - Buttons, error states, primary accent
+    - Orange (#d2793e) - Tab containers, hover states, secondary accent
+    - Cream/Beige (#eaddac) - Background, text on dark elements
+    - Teal (#318b73) - Header background, stat boxes, success states
+    - Dark Navy (#26274e) - Primary borders, main text color
+  - **Brutalist Design Elements**:
+    - Sharp edges (border-radius: 0) instead of rounded corners
+    - Thick 5-6px borders on all interactive elements
+    - Offset box shadows (8-12px) for depth instead of soft shadows
+    - No gradients - flat, bold colors throughout
+    - High contrast combinations for maximum impact
+    - Transform effects on hover/click with minimal transitions
+  - **Applied to all components**:
+    - Buttons: Thick borders, uppercase text, offset shadows, bold transforms
+    - Forms: Heavy borders, no rounded corners, brutalist focus states
+    - Stats: Flat backgrounds, text shadows, chunky borders
+    - Tokens: Bold borders, sharp hover effects, flat colors
+    - Test results: High-contrast pass/fail indicators
+    - Code blocks: Dark navy backgrounds with heavy shadows
+  - **Token visualization**: Updated color palette to match retro-brutal theme
+  - Result: Bold, memorable, retro-inspired interface with raw, unapologetic design
 
 ### Changed (2026-01-31)
 - **UI Redesign**: Consolidated all functionality into a single-page application

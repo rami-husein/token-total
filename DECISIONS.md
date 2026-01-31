@@ -322,3 +322,57 @@ Implement a custom 5-color palette across the entire application:
 - ⚠️ Future marketing materials should align with new color scheme
 
 ---
+
+## ADR-011: Retro-Brutal Visual Design System
+
+**Date**: 2026-01-31
+
+**Context**: 
+The application had a modern, clean design with rounded corners, soft shadows, and gradient backgrounds. To create a stronger visual identity and stand out from typical developer tools, a retro-brutal aesthetic was requested with a specific color palette.
+
+**Decision**: 
+Implement a comprehensive retro-brutal design system with the following characteristics:
+
+**Color Palette**:
+- Dark Brown (#943c23) - Primary accent for buttons and error states
+- Orange (#d2793e) - Secondary accent for hover states and containers
+- Cream/Beige (#eaddac) - Background and light text
+- Teal (#318b73) - Success states and headers
+- Dark Navy (#26274e) - Primary borders and text
+
+**Design Elements**:
+1. **Typography**: Arial Black, font-weight 900, uppercase text, tight/negative letter-spacing
+2. **Borders**: Sharp edges (border-radius: 0), thick 5-6px borders
+3. **Shadows**: Offset box shadows (8-12px) instead of soft blur shadows
+4. **Colors**: Flat, high-contrast combinations with no gradients
+5. **Interactions**: Sharp transforms (-2px/-2px on hover) with fast transitions (0.1s)
+6. **Spacing**: Increased padding (30-40px) for bold, chunky feel
+
+**Rationale**:
+- **Brutalism principles**: Raw, unapologetic, function-over-form aesthetic
+- **Retro influence**: 1960s-70s Swiss design, early computer interfaces
+- **High impact**: Bold colors and heavy borders create memorable impression
+- **Anti-trend**: Stands out in sea of modern minimalist tools
+- **Accessibility**: High contrast ensures readability despite heavy styling
+- **Brand identity**: Unique visual signature differentiates Token Total
+
+**Consequences**:
+- ✅ Distinctive, memorable visual identity
+- ✅ Strong brand differentiation from competitors
+- ✅ High contrast improves readability for some users
+- ✅ Bold design conveys confidence and stability
+- ✅ Retro aesthetic appeals to specific developer demographic
+- ✅ Brutalist approach aligns with "no-nonsense tool" positioning
+- ⚠️ Polarizing design - users will love it or hate it (by design)
+- ⚠️ Heavy fonts may render poorly on low-DPI displays
+- ⚠️ Large shadows/borders increase visual weight (intentional)
+- ⚠️ Uppercase text reduces readability for longer content (mitigated by using only for headings/labels)
+- ⚠️ Breaking visual change for existing users
+
+**Design Philosophy**:
+- "Form follows function, but function can be bold"
+- Embrace constraints (no gradients, no curves) as creative challenge
+- Use whitespace aggressively to balance heavy elements
+- Let borders and shadows create depth instead of blur
+
+---

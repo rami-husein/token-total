@@ -35,6 +35,11 @@ Future features and improvements for Token Total.
 - ✅ Instant switching between features (no page reloads)
 - ✅ Integrated API documentation with syntax-highlighted examples
 - ✅ **Custom Color Palette**: Applied unique brand identity with teal/brown/tan color scheme across entire application
+- ✅ **Retro-Brutal Design**: Complete visual redesign with brutalist aesthetic
+  - Heavy fonts (Arial Black, weight 900), uppercase text
+  - Sharp edges, thick borders (5-6px), offset box shadows (8-12px)
+  - Flat colors with high contrast, no gradients
+  - Bold, memorable visual identity
 
 ---
 
