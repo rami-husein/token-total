@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-02-21)
+- **GITHUB PAGES DEPLOYMENT**: Fixed 404 errors when loading tokenizer files on GitHub Pages
+  - Root cause: Relative paths `.././public/encodings/*.tiktoken` resolved incorrectly when site served from subdirectory
+  - GitHub Pages serves repo at `/token-total/`, so `../` escaped the repo directory, causing 404s
+  - Solution: Changed all encoding URLs in `src/encodings/registry.js` to use `import.meta.url` for proper resolution
+  - Updated 5 URL paths (lines 23, 38, 50, 60, 70): `.././public/encodings/...` → `new URL('../../public/encodings/...', import.meta.url).href`
+  - This produces absolute URLs that resolve correctly regardless of HTML page location
+  - Uses standard ES module pattern for path resolution relative to module location, not page location
+  - Impact: Tokenizer now loads correctly on GitHub Pages, examples pages, and test pages
+  - Files modified: `src/encodings/registry.js`
+
 ### Added (2026-01-31)
 - **DOCUMENTATION**: Created comprehensive "How It Works" explanation page
   - New file: `how-it-works.html` - layman-friendly explanation of tokenization

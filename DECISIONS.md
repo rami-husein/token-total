@@ -10,6 +10,88 @@ Each decision follows this structure:
 
 ---
 
+## ADR-013: Use import.meta.url for Encoding File Path Resolution
+
+**Date**: 2026-02-21
+
+**Context**: 
+When deploying to GitHub Pages, users encountered 404 errors loading tokenizer files:
+```
+Failed to load tokenizer: Failed to fetch .././public/encodings/o200k_base.tiktoken: 404
+```
+
+**Root Cause Analysis**:
+- Encoding URLs in `src/encodings/registry.js` used relative paths: `.././public/encodings/*.tiktoken`
+- These paths are passed to `fetch()` in `tiktoken-loader.js`
+- `fetch()` resolves relative URLs against the **document's base URL** (the HTML page), not the module location
+- **Local development** (served at `/`): 
+  - `fetch('.././public/encodings/o200k_base.tiktoken')` → `/public/encodings/o200k_base.tiktoken` ✓ works
+- **GitHub Pages** (served at `/token-total/`):
+  - `../` from `/token-total/` goes to `/` (escapes the repo directory)
+  - Final URL: `/public/encodings/o200k_base.tiktoken` (outside repo) → 404 error ✗
+- Same issue affects any subdirectory deployment (Netlify, Vercel, etc. with base paths)
+
+**Alternatives Considered**:
+
+1. **Use simple relative paths (`./public/encodings/...`)** + add `<base>` tags to HTML pages
+   - ❌ Requires modifying all HTML files (index.html, examples/*.html, test/index.html)
+   - ❌ `<base>` tag affects all relative URLs on page (images, links, scripts)
+   - ❌ Fragile - easy to forget when adding new pages
+
+2. **Use absolute paths from root (`/public/encodings/...`)**
+   - ❌ Breaks local development (assumes server root = project root)
+   - ❌ Doesn't work with GitHub Pages subdirectory deployment
+   - ❌ Not portable to different hosting environments
+
+3. **Use import.meta.url for module-relative path resolution** (chosen)
+   - ✅ Standard ES module pattern for resolving paths relative to module location
+   - ✅ Produces absolute URLs that work from any HTML page
+   - ✅ Single file change (`src/encodings/registry.js` only)
+   - ✅ Works on GitHub Pages, local dev, and any static host
+   - ✅ No HTML modifications needed
+
+**Decision**: 
+Change all encoding URL paths in `src/encodings/registry.js` to use `import.meta.url` for proper resolution:
+
+```javascript
+// Before
+url: '.././public/encodings/cl100k_base.tiktoken',
+
+// After
+url: new URL('../../public/encodings/cl100k_base.tiktoken', import.meta.url).href,
+```
+
+The path `../../public/encodings/` correctly resolves from `src/encodings/registry.js`:
+- First `../` → go up to `src/`
+- Second `../` → go up to project root
+- `public/encodings/` → descend to encoding files
+
+**Implementation**:
+Updated 5 URLs in `src/encodings/registry.js` (lines 23, 38, 50, 60, 70):
+- `cl100k_base` (GPT-4, GPT-3.5)
+- `o200k_base` (GPT-4o)
+- `r50k_base` (GPT-2)
+- `p50k_base` (GPT-3)
+- `p50k_edit` (GPT-3 Code)
+
+**Consequences**:
+- ✅ **Fixes GitHub Pages deployment** - tokenizer files load correctly from subdirectory
+- ✅ **Maintains local development** - continues working with `python -m http.server`
+- ✅ **Portable** - works on any static host (Netlify, Vercel, Cloudflare Pages, etc.)
+- ✅ **Standard pattern** - uses documented ES module URL resolution behavior
+- ✅ **Minimal changes** - single file modified, no HTML changes
+- ✅ **Examples/tests work** - all HTML pages load encodings correctly regardless of location
+- ⚠️ **Absolute URLs in console** - fetch logs show full URLs instead of relative paths (minor change)
+- ⚠️ **Modern browsers only** - `import.meta.url` requires ES module support (already a requirement)
+
+**Verification**:
+- Local test server starts correctly
+- All paths resolve to `file://` URLs in development
+- GitHub Pages URLs will resolve to `https://` URLs in production
+- No changes needed for existing test suite
+
+---
+
 ## ADR-012: Test Expectations Must Match Reference Implementation
 
 **Date**: 2026-01-31

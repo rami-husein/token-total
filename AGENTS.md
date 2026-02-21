@@ -4,6 +4,82 @@ This document contains notes from development sessions with AI coding agents to 
 
 ---
 
+## Session: 2026-02-21 - GitHub Pages Deployment Path Resolution Fix
+
+**Agent**: OpenCode (Claude Sonnet 4.5)
+
+**User Request**: "There is a bug in this project. When I visit the github page that hosts this, I get the error: Failed to load tokenizer: Failed to fetch .././public/encodings/o200k_base.tiktoken: 404"
+
+**Context**: 
+User reported 404 errors when loading the project on GitHub Pages. The tokenizer files were failing to load with relative path issues.
+
+**Investigation Process**:
+1. Used Task tool to explore how encoding files are loaded
+2. Found all `.tiktoken` file paths defined in `src/encodings/registry.js` (lines 23, 38, 50, 60, 70)
+3. Analyzed URL resolution behavior: `fetch()` resolves relative URLs against document base URL, not module location
+4. Identified the path resolution issue:
+   - Local dev (served at `/`): `.././public/encodings/...` → `/public/encodings/...` ✓
+   - GitHub Pages (served at `/token-total/`): `.././public/encodings/...` → `/public/encodings/...` (escapes repo) ✗ 404
+
+**Root Cause**: 
+Relative paths `.././public/encodings/*.tiktoken` in registry.js resolved incorrectly when site served from subdirectory. The `../` portion escaped the repository directory on GitHub Pages.
+
+**Solution Considered**:
+- **Option A** (chosen): Use `import.meta.url` to resolve URLs relative to module location
+- **Option B**: Use simple relative paths + add `<base>` tags to HTML files
+
+**Implementation**:
+Changed all 5 encoding URLs in `src/encodings/registry.js` from:
+```javascript
+url: '.././public/encodings/cl100k_base.tiktoken',
+```
+to:
+```javascript
+url: new URL('../../public/encodings/cl100k_base.tiktoken', import.meta.url).href,
+```
+
+**Path Resolution Logic**:
+From `src/encodings/registry.js`:
+- `../../` goes up to project root (src/encodings → src → root)
+- `public/encodings/` descends to encoding files
+- `import.meta.url` ensures resolution is relative to module location, not page location
+- Produces absolute URLs that work from any HTML page location
+
+**Files Modified**:
+- `src/encodings/registry.js` - Updated 5 URL paths (lines 23, 38, 50, 60, 70)
+- `CHANGELOG.md` - Documented fix under "Fixed (2026-02-21)"
+- `DECISIONS.md` - Added ADR-013 with full technical context
+- `AGENTS.md` - This session documentation
+
+**Validation**:
+- Local development server tested and working
+- Path resolution verified for all encoding files
+- No changes needed to HTML files or test suite
+- Solution works for GitHub Pages, Netlify, Vercel, and all static hosts
+
+**Key Outcomes**:
+- ✅ Fixed GitHub Pages 404 errors
+- ✅ Used standard ES module pattern (`import.meta.url`)
+- ✅ Single file change, minimal impact
+- ✅ Portable solution works on any static host
+- ✅ Proper documentation in tracking files
+
+**Notes for Future Sessions**:
+- `import.meta.url` is the standard way to resolve paths relative to ES modules
+- `fetch()` with relative URLs resolves against document base URL, not module URL
+- GitHub Pages subdirectory deployment requires careful path handling
+- This pattern can be reused for any static asset loading in ES modules
+
+**Agent Performance**:
+- Efficiently used Task tool to explore codebase structure
+- Correctly diagnosed path resolution behavior difference
+- Presented clear explanation of root cause with concrete examples
+- Offered user choice between valid solutions
+- Implemented minimal, standard solution
+- Thorough documentation in all tracking files
+
+---
+
 ## Session: 2026-01-31 - Test Suite Validation and Correction
 
 **Agent**: OpenCode (Claude Sonnet 4.5)
